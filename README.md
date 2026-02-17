@@ -1,172 +1,117 @@
-# 🎯 Procrastify v2.0
+# Procrastify
 
-**Mobile Productivity & Distraction Management System**
+**A Productivity & Task Management App for Students**
 
-A comprehensive mobile app combining intelligent task prioritization with real-time phone usage monitoring for students.
+This is our BCA final year project. It helps students manage their tasks, track focus sessions, and stay productive.
 
-## 🚀 Features
+## Features
 
-### Core Features
-1. **User Authentication** - Secure registration & login with JWT tokens
-2. **Task Management** - Create, edit, complete, delete tasks with categories
-3. **Intelligent Priority Algorithm** - Auto-ranking: `Priority = Days × Complexity`
+- **User Login & Registration** — Secure login with JWT tokens
+- **Task Management** — Add, edit, complete, delete tasks with categories
+- **Priority System** — Tasks are auto-ranked using `Priority = Days × Complexity`
+- **Focus Timer (Pomodoro)** — 25-minute focus sessions with break tracking
+- **Analytics Dashboard** — See your focus score, daily stats, and progress
+- **Screen Time Tracking** — Monitor productive vs distraction time
+- **Distraction Alerts** — Get alerts when spending too much time on distracting apps
 
-### Intelligence Features
-4. **Screen Time Tracking** - Monitor app usage across your device
-5. **Smart Distraction Alerts** - Get notified when spending too much time on distracting apps
-6. **Real-Time Analytics Dashboard** - Focus score, time breakdown, top apps
-7. **Task Progress Tracker** - Completion percentages and trends
+## Tech Stack
 
-### Advanced Features
-8. **Focus Sessions (Pomodoro)** - 25-min focus timer with breaks
-9. **Advanced Analytics** - Weekly/monthly trends and charts
-10. **Notifications & Settings** - Customizable themes and preferences
+| Component | Technology |
+|-----------|------------|
+| Frontend (Web) | Streamlit |
+| Backend API | Flask (Python) |
+| Database | MySQL (via XAMPP) |
+| Authentication | JWT + bcrypt |
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 procrastify/
 ├── backend/                 # Flask API Server
-│   ├── app.py               # Main Flask application
-│   ├── config.py            # Configuration
-│   ├── requirements.txt     # Dependencies
+│   ├── app.py               # Main app
+│   ├── config.py            # Config settings
 │   ├── database/
 │   │   └── schema.sql       # MySQL tables
-│   ├── routes/
-│   │   ├── auth.py          # Auth endpoints
-│   │   ├── tasks.py         # Task endpoints
-│   │   ├── analytics.py     # Analytics endpoints
-│   │   └── sessions.py      # Focus session endpoints
-│   ├── models/
-│   │   └── models.py        # Database models
-│   └── utils/
-│       ├── auth_utils.py    # JWT & password utilities
-│       └── priority.py      # Priority algorithm
+│   ├── routes/              # API routes
+│   ├── models/              # Database models
+│   └── utils/               # Helper functions
 │
-└── mobile/                  # Kivy Mobile App
-    ├── main.py              # App entry point
-    ├── requirements.txt     # Dependencies
-    ├── screens/
-    │   ├── login.py         # Login screen
-    │   ├── register.py      # Registration screen
-    │   ├── home.py          # Dashboard
-    │   ├── tasks.py         # Task management
-    │   ├── analytics.py     # Analytics dashboard
-    │   ├── focus.py         # Pomodoro timer
-    │   └── settings.py      # Settings
-    ├── components/
-    │   └── alert_popup.py   # Distraction alert
-    └── services/
-        └── api_client.py    # API communication
+├── streamlit/               # Streamlit Web App
+│   ├── app.py               # Login/Register page
+│   ├── utils.py             # API client & helpers
+│   └── pages/               # Dashboard, Tasks, Timer, Analytics, Settings
+│
+└── mobile/                  # Kivy Mobile App (experimental)
+    ├── main.py              # Entry point
+    ├── screens/             # All app screens
+    └── services/            # API communication
 ```
 
-## 🛠️ Technology Stack
+## How to Run
 
-| Layer | Technology |
-|-------|------------|
-| Mobile UI | Kivy 2.3+ / KivyMD (Material Design) |
-| Backend API | Flask 3.0+ |
-| Database | MySQL 8.0+ (via XAMPP) |
-| Auth | JWT + bcrypt |
+### 1. Database Setup
 
-## 📦 Setup Instructions
+1. Open XAMPP and start **Apache** + **MySQL**
+2. Go to `http://localhost/phpmyadmin`
+3. Create a new database called `procrastify`
+4. Import `backend/database/schema.sql` into it
 
-### 1. Database Setup (XAMPP)
-
-1. Start XAMPP Control Panel
-2. Start **Apache** and **MySQL** services
-3. Open **phpMyAdmin**: `http://localhost/phpmyadmin`
-4. Create database: Click "New" → Enter `procrastify` → Click "Create"
-5. Import schema: Select `procrastify` database → Click "Import" → Choose `backend/database/schema.sql` → Click "Go"
-
-### 2. Backend Setup
+### 2. Start Backend
 
 ```bash
-# Navigate to backend
-cd procrastify/backend
-
-# Create virtual environment (optional)
-python -m venv venv
-venv\Scripts\activate  # Windows
-
-# Install dependencies
+cd backend
 pip install -r requirements.txt
-
-# Run server
 python app.py
 ```
 
-Server runs at: `http://localhost:5000`
+Server starts at `http://localhost:5000`
 
-### 3. Mobile App Setup
+### 3. Start Streamlit App
 
 ```bash
-# Navigate to mobile app
-cd procrastify/mobile
-
-# Install dependencies
+cd streamlit
 pip install -r requirements.txt
-
-# Run app (desktop testing)
-python main.py
+streamlit run app.py
 ```
 
-## 🔌 API Endpoints
+App opens at `http://localhost:8501`
 
-### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - Login user
-- `GET /api/auth/profile` - Get profile (protected)
+## API Endpoints
+
+### Auth
+- `POST /api/auth/register` — Register
+- `POST /api/auth/login` — Login
+- `GET /api/auth/profile` — Get profile
 
 ### Tasks
-- `GET /api/tasks` - Get all tasks (sorted by priority)
-- `POST /api/tasks` - Create task
-- `PUT /api/tasks/<id>` - Update task
-- `DELETE /api/tasks/<id>` - Delete task
-- `PATCH /api/tasks/<id>/complete` - Mark complete
+- `GET /api/tasks` — Get tasks
+- `POST /api/tasks` — Create task
+- `DELETE /api/tasks/<id>` — Delete task
+- `PATCH /api/tasks/<id>/complete` — Mark complete
 
 ### Analytics
-- `GET /api/analytics/daily` - Today's stats
-- `GET /api/analytics/weekly` - Week summary
-- `POST /api/analytics/app-usage` - Log app usage
-- `GET /api/analytics/focus-score` - Get focus score
+- `GET /api/analytics/daily` — Today's stats
+- `GET /api/analytics/weekly` — Weekly summary
 
 ### Focus Sessions
-- `POST /api/sessions/start` - Start Pomodoro
-- `POST /api/sessions/end` - End session
-- `GET /api/sessions/streak` - Get streak
+- `POST /api/sessions/start` — Start timer
+- `POST /api/sessions/end` — End session
+- `GET /api/sessions/streak` — Get streak
 
-## 🧮 Key Algorithms
+## How Priority Works
 
-### Priority Calculation
-```python
-Priority = Days_Until_Deadline × Complexity
-# Lower score = Higher urgency
 ```
-
-### Focus Score
-```python
-Focus_Score = (Productive_Time / Total_Time) × 100
-# 80-100% = Excellent, 60-79% = Good, 40-59% = Fair, 0-39% = Poor
+Priority Score = Days Until Deadline × Complexity (1-5)
 ```
+Lower score = more urgent. Overdue tasks get a score of 0 (highest priority).
 
-## 📱 Building for Android
+## Team
 
-```bash
-# Install buildozer
-pip install buildozer
+**BCA 6th Semester — Group G39**
 
-# Initialize (first time only)
-buildozer init
-
-# Build APK
-buildozer android debug
-```
-
-## 👥 Team
-
-**BCA 6th Semester Major Project - Group G39**
+- Saksham
+- Vivek
 
 ---
 
-Made with ❤️ for students who want to beat procrastination!
+Made for students who want to stop procrastinating 💪
