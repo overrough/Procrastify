@@ -23,23 +23,27 @@ st.markdown("""
 html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
 
 .page-header {
-    background: linear-gradient(135deg, #11998e, #38ef7d);
+    background: #162231;
+    border: 1px solid #1e3a4f;
     padding: 1.25rem 1.5rem;
-    border-radius: 1rem;
+    border-radius: 0.75rem;
     margin-bottom: 1.5rem;
 }
-.page-header h2 { margin: 0; color: white; font-weight: 700; }
-.page-header p { margin: 0; color: rgba(255,255,255,0.85); font-size: 0.9rem; }
+.page-header h2 { margin: 0; color: #e2e8f0; font-weight: 700; }
+.page-header p { margin: 0; color: #94a3b8; font-size: 0.9rem; }
 
 .task-card {
     border-left: 4px solid;
-    background: rgba(255,255,255,0.05);
+    background: #162231;
     border-radius: 0 0.75rem 0.75rem 0;
     padding: 1rem 1.25rem;
     margin-bottom: 0.75rem;
+    border-top: 1px solid #1e3a4f;
+    border-right: 1px solid #1e3a4f;
+    border-bottom: 1px solid #1e3a4f;
 }
-.task-card h4 { margin: 0 0 0.25rem; font-weight: 700; }
-.task-card .meta { opacity: 0.65; font-size: 0.85rem; }
+.task-card h4 { margin: 0 0 0.25rem; font-weight: 700; color: #e2e8f0; }
+.task-card .meta { color: #94a3b8; font-size: 0.85rem; }
 .priority-badge {
     display: inline-block;
     padding: 0.2rem 0.6rem;

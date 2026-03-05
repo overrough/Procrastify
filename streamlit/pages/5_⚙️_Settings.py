@@ -21,20 +21,23 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
 .page-header {
-    background: linear-gradient(135deg, #6b7280, #4b5563);
+    background: #162231;
+    border: 1px solid #1e3a4f;
     padding: 1.25rem 1.5rem;
-    border-radius: 1rem;
+    border-radius: 0.75rem;
     margin-bottom: 1.5rem;
 }
-.page-header h2 { margin: 0; color: white; font-weight: 700; }
-.page-header p { margin: 0; color: rgba(255,255,255,0.8); font-size: 0.9rem; }
+.page-header h2 { margin: 0; color: #e2e8f0; font-weight: 700; }
+.page-header p { margin: 0; color: #94a3b8; font-size: 0.9rem; }
 .info-card {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: #162231;
+    border: 1px solid #1e3a4f;
     border-radius: 0.75rem;
     padding: 1.25rem;
     margin-bottom: 1rem;
+    color: #94a3b8;
 }
+.info-card strong { color: #e2e8f0; }
 </style>
 """, unsafe_allow_html=True)
 

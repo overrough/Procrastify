@@ -21,24 +21,26 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
 .page-header {
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    background: #162231;
+    border: 1px solid #1e3a4f;
     padding: 1.25rem 1.5rem;
-    border-radius: 1rem;
+    border-radius: 0.75rem;
     margin-bottom: 1.5rem;
 }
-.page-header h2 { margin: 0; color: white; font-weight: 700; }
-.page-header p { margin: 0; color: rgba(255,255,255,0.8); font-size: 0.9rem; }
+.page-header h2 { margin: 0; color: #e2e8f0; font-weight: 700; }
+.page-header p { margin: 0; color: #94a3b8; font-size: 0.9rem; }
 .stat-card {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: #162231;
+    border: 1px solid #1e3a4f;
     border-radius: 0.75rem;
     padding: 1.25rem;
     text-align: center;
 }
-.stat-card .value { font-size: 2rem; font-weight: 700; }
-.stat-card .label { font-size: 0.85rem; opacity: 0.7; margin-top: 0.25rem; }
+.stat-card .value { font-size: 2rem; font-weight: 700; color: #2dd4bf; }
+.stat-card .label { font-size: 0.85rem; color: #94a3b8; margin-top: 0.25rem; }
 .task-item {
-    background: rgba(255,255,255,0.05);
+    background: #162231;
+    border: 1px solid #1e3a4f;
     border-radius: 0.5rem;
     padding: 0.75rem 1rem;
     margin-bottom: 0.5rem;

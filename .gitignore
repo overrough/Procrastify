@@ -32,3 +32,9 @@ desktop.ini
 
 # Logs
 *.log
+
+# Local config
+.streamlit/
+
+# Tool artifacts
+.gemini/

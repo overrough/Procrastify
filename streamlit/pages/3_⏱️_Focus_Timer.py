@@ -16,16 +16,17 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
 .page-header {
-    background: linear-gradient(135deg, #ec4899, #f43f5e);
+    background: #162231;
+    border: 1px solid #1e3a4f;
     padding: 1.25rem 1.5rem;
-    border-radius: 1rem;
+    border-radius: 0.75rem;
     margin-bottom: 1.5rem;
 }
-.page-header h2 { margin: 0; color: white; font-weight: 700; }
-.page-header p { margin: 0; color: rgba(255,255,255,0.8); font-size: 0.9rem; }
+.page-header h2 { margin: 0; color: #e2e8f0; font-weight: 700; }
+.page-header p { margin: 0; color: #94a3b8; font-size: 0.9rem; }
 .session-card {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: #162231;
+    border: 1px solid #1e3a4f;
     border-radius: 0.5rem;
     padding: 0.6rem 1rem;
     margin-bottom: 0.4rem;
@@ -33,11 +34,12 @@ html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
     justify-content: space-between;
 }
 .tip-box {
-    background: rgba(99,102,241,0.1);
-    border: 1px solid rgba(99,102,241,0.2);
+    background: rgba(45,212,191,0.08);
+    border: 1px solid rgba(45,212,191,0.2);
     border-radius: 0.75rem;
     padding: 1rem;
     margin-top: 1rem;
+    color: #94a3b8;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -72,32 +74,32 @@ dur = st.session_state.timer_duration
 timer_html = f"""
 <div id="timer-wrap" style="text-align:center;padding:1.5rem;font-family:'Inter',sans-serif;">
     <div id="timer-display" style="
-        font-size:5rem;font-weight:700;color:#818cf8;margin-bottom:0.25rem;
+        font-size:5rem;font-weight:700;color:#2dd4bf;margin-bottom:0.25rem;
     ">{dur:02d}:00</div>
-    <div id="timer-label" style="font-size:1rem;color:#999;margin-bottom:1.5rem;">Ready to focus?</div>
+    <div id="timer-label" style="font-size:1rem;color:#94a3b8;margin-bottom:1.5rem;">Ready to focus?</div>
     <div style="display:flex;gap:0.75rem;justify-content:center;margin-bottom:1rem;">
         <button onclick="startTimer()" style="
-            background:#6366f1;color:white;border:none;padding:0.6rem 1.5rem;
+            background:#2dd4bf;color:#0f1923;border:none;padding:0.6rem 1.5rem;
             border-radius:0.5rem;font-size:0.95rem;font-weight:600;cursor:pointer;
         ">▶️ Start</button>
         <button onclick="pauseTimer()" style="
-            background:rgba(255,255,255,0.1);color:white;border:1px solid rgba(255,255,255,0.2);
+            background:#162231;color:#e2e8f0;border:1px solid #1e3a4f;
             padding:0.6rem 1.5rem;border-radius:0.5rem;font-size:0.95rem;cursor:pointer;
         ">⏸️ Pause</button>
         <button onclick="resetTimer()" style="
-            background:rgba(255,255,255,0.1);color:white;border:1px solid rgba(255,255,255,0.2);
+            background:#162231;color:#e2e8f0;border:1px solid #1e3a4f;
             padding:0.6rem 1.5rem;border-radius:0.5rem;font-size:0.95rem;cursor:pointer;
         ">🔄 Reset</button>
     </div>
     <div style="display:flex;gap:0.4rem;justify-content:center;">
-        <button onclick="setDur(15)" style="background:rgba(255,255,255,0.06);color:#aaa;border:1px solid rgba(255,255,255,0.12);padding:0.35rem 0.8rem;border-radius:2rem;font-size:0.8rem;cursor:pointer;">15m</button>
-        <button onclick="setDur(25)" style="background:rgba(255,255,255,0.06);color:#aaa;border:1px solid rgba(255,255,255,0.12);padding:0.35rem 0.8rem;border-radius:2rem;font-size:0.8rem;cursor:pointer;">25m</button>
-        <button onclick="setDur(45)" style="background:rgba(255,255,255,0.06);color:#aaa;border:1px solid rgba(255,255,255,0.12);padding:0.35rem 0.8rem;border-radius:2rem;font-size:0.8rem;cursor:pointer;">45m</button>
-        <button onclick="setDur(60)" style="background:rgba(255,255,255,0.06);color:#aaa;border:1px solid rgba(255,255,255,0.12);padding:0.35rem 0.8rem;border-radius:2rem;font-size:0.8rem;cursor:pointer;">60m</button>
+        <button onclick="setDur(15)" style="background:rgba(45,212,191,0.1);color:#2dd4bf;border:1px solid rgba(45,212,191,0.2);padding:0.35rem 0.8rem;border-radius:2rem;font-size:0.8rem;cursor:pointer;">15m</button>
+        <button onclick="setDur(25)" style="background:rgba(45,212,191,0.1);color:#2dd4bf;border:1px solid rgba(45,212,191,0.2);padding:0.35rem 0.8rem;border-radius:2rem;font-size:0.8rem;cursor:pointer;">25m</button>
+        <button onclick="setDur(45)" style="background:rgba(45,212,191,0.1);color:#2dd4bf;border:1px solid rgba(45,212,191,0.2);padding:0.35rem 0.8rem;border-radius:2rem;font-size:0.8rem;cursor:pointer;">45m</button>
+        <button onclick="setDur(60)" style="background:rgba(45,212,191,0.1);color:#2dd4bf;border:1px solid rgba(45,212,191,0.2);padding:0.35rem 0.8rem;border-radius:2rem;font-size:0.8rem;cursor:pointer;">60m</button>
     </div>
     <div style="margin-top:1rem;">
-        <div style="background:rgba(255,255,255,0.08);border-radius:4px;height:6px;width:100%;">
-            <div id="pbar" style="background:#6366f1;border-radius:4px;height:6px;width:0%;transition:width 1s linear;"></div>
+        <div style="background:#1e3a4f;border-radius:4px;height:6px;width:100%;">
+            <div id="pbar" style="background:#2dd4bf;border-radius:4px;height:6px;width:0%;transition:width 1s linear;"></div>
         </div>
     </div>
 </div>
@@ -121,7 +123,7 @@ timer_html = f"""
     function pauseTimer(){{clearInterval(iv);on=false;document.getElementById('timer-label').textContent='⏸️ Paused';}}
     function resetTimer(){{clearInterval(iv);on=false;rem=total;upd();
         document.getElementById('timer-label').textContent='Ready to focus?';
-        document.getElementById('timer-display').style.color='#818cf8';}}
+        document.getElementById('timer-display').style.color='#2dd4bf';}}
     function setDur(m){{if(on)return;total=m*60;rem=total;upd();}}
 </script>
 """

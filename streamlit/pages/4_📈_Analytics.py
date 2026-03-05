@@ -22,22 +22,23 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
 .page-header {
-    background: linear-gradient(135deg, #3b82f6, #6366f1);
+    background: #162231;
+    border: 1px solid #1e3a4f;
     padding: 1.25rem 1.5rem;
-    border-radius: 1rem;
+    border-radius: 0.75rem;
     margin-bottom: 1.5rem;
 }
-.page-header h2 { margin: 0; color: white; font-weight: 700; }
-.page-header p { margin: 0; color: rgba(255,255,255,0.8); font-size: 0.9rem; }
+.page-header h2 { margin: 0; color: #e2e8f0; font-weight: 700; }
+.page-header p { margin: 0; color: #94a3b8; font-size: 0.9rem; }
 .stat-card {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: #162231;
+    border: 1px solid #1e3a4f;
     border-radius: 0.75rem;
     padding: 1rem;
     text-align: center;
 }
-.stat-card .value { font-size: 1.75rem; font-weight: 700; }
-.stat-card .label { font-size: 0.8rem; opacity: 0.7; }
+.stat-card .value { font-size: 1.75rem; font-weight: 700; color: #2dd4bf; }
+.stat-card .label { font-size: 0.8rem; color: #94a3b8; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -89,7 +90,7 @@ if total_time > 0:
     fig = go.Figure(data=[go.Pie(
         labels=["Productive", "Distraction"],
         values=[productive, distraction],
-        marker=dict(colors=["#6366f1", "#ef4444"]),
+        marker=dict(colors=["#2dd4bf", "#ef4444"]),
         hole=0.5,
         textinfo="label+percent"
     )])
@@ -122,7 +123,7 @@ try:
             x=dates, y=scores,
             mode="lines+markers",
             name="Focus Score",
-            line=dict(color="#6366f1", width=2),
+            line=dict(color="#2dd4bf", width=2),
             marker=dict(size=8)
         ))
         fig2.update_layout(

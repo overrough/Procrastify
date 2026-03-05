@@ -21,20 +21,21 @@ st.markdown("""
 html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
 
 .hero-header {
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    background: #162231;
+    border: 1px solid #1e3a4f;
     padding: 2.5rem 2rem;
-    border-radius: 1rem;
+    border-radius: 0.75rem;
     text-align: center;
     margin-bottom: 2rem;
 }
 .hero-header h1 {
-    color: white;
+    color: #e2e8f0;
     font-size: 2.5rem;
     font-weight: 700;
     margin: 0;
 }
 .hero-header .tagline {
-    color: rgba(255,255,255,0.8);
+    color: #94a3b8;
     font-size: 1rem;
     margin-top: 0.5rem;
 }
@@ -46,16 +47,18 @@ html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
     margin-top: 1.25rem;
 }
 .pill {
-    background: rgba(255,255,255,0.12);
-    color: rgba(255,255,255,0.9);
+    background: rgba(45,212,191,0.12);
+    color: #2dd4bf;
     padding: 0.4rem 0.9rem;
     border-radius: 2rem;
     font-size: 0.8rem;
     font-weight: 600;
+    border: 1px solid rgba(45,212,191,0.2);
 }
 .success-banner {
-    background: #059669;
-    color: white;
+    background: rgba(45,212,191,0.12);
+    color: #2dd4bf;
+    border: 1px solid rgba(45,212,191,0.25);
     padding: 0.75rem 1rem;
     border-radius: 0.5rem;
     font-weight: 600;
@@ -63,8 +66,9 @@ html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
     margin-bottom: 1rem;
 }
 .error-banner {
-    background: #dc2626;
-    color: white;
+    background: rgba(239,68,68,0.12);
+    color: #f87171;
+    border: 1px solid rgba(239,68,68,0.25);
     padding: 0.75rem 1rem;
     border-radius: 0.5rem;
     font-weight: 600;

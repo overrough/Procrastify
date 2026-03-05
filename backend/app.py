@@ -67,20 +67,20 @@ app = create_app()
 
 if __name__ == '__main__':
     print("""
-    ╔═══════════════════════════════════════════════════════════╗
-    ║                                                           ║
-    ║   🚀 PROCRASTIFY v2.0 API SERVER                          ║
-    ║                                                           ║
-    ║   Server running at: http://localhost:5000                ║
-    ║                                                           ║
-    ║   Endpoints:                                              ║
-    ║   - POST /api/auth/register     - Register new user       ║
-    ║   - POST /api/auth/login        - Login user              ║
-    ║   - GET  /api/tasks             - Get all tasks           ║
-    ║   - POST /api/tasks             - Create task             ║
-    ║   - GET  /api/analytics/daily   - Get daily stats         ║
-    ║   - POST /api/sessions/start    - Start focus session     ║
-    ║                                                           ║
-    ╚═══════════════════════════════════════════════════════════╝
+    ===========================================================
+    |                                                           |
+    |   PROCRASTIFY v2.0 API SERVER                             |
+    |                                                           |
+    |   Server running at: http://localhost:5000                |
+    |                                                           |
+    |   Endpoints:                                              |
+    |   - POST /api/auth/register     - Register new user       |
+    |   - POST /api/auth/login        - Login user              |
+    |   - GET  /api/tasks             - Get all tasks           |
+    |   - POST /api/tasks             - Create task             |
+    |   - GET  /api/analytics/daily   - Get daily stats         |
+    |   - POST /api/sessions/start    - Start focus session     |
+    |                                                           |
+    ===========================================================
     """)
     app.run(host='0.0.0.0', port=5000, debug=True)
