@@ -1,7 +1,4 @@
-"""
-Task Management Routes for Procrastify
-CRUD operations for tasks with priority calculation
-"""
+# task routes - CRUD operations with priority calculation
 from flask import Blueprint, request, jsonify
 from datetime import datetime, date
 import sys
@@ -18,16 +15,8 @@ tasks_bp = Blueprint('tasks', __name__)
 
 @tasks_bp.route('', methods=['GET'])
 @token_required
+# get all tasks for the current user
 def get_all_tasks():
-    """
-    Get all tasks for the authenticated user
-    
-    Query Parameters:
-        - status: Filter by status ('pending', 'completed', or 'all')
-    
-    Returns:
-        - List of tasks sorted by priority (lower score = higher priority)
-    """
     status = request.args.get('status', 'pending')
     
     if status == 'all':
@@ -81,20 +70,8 @@ def get_all_tasks():
 
 @tasks_bp.route('', methods=['POST'])
 @token_required
+# create a new task with priority score
 def create_new_task():
-    """
-    Create a new task with automatic priority calculation
-    
-    Request Body:
-        - title: Task title (required)
-        - deadline: Deadline date 'YYYY-MM-DD' (required)
-        - complexity: Complexity level 1-5 (required)
-        - category: 'Study', 'Personal', 'Work', 'Other' (optional, default 'Study')
-        - description: Task description (optional)
-    
-    Returns:
-        - Created task with priority score
-    """
     data = request.get_json()
     
     if not data:
@@ -164,8 +141,8 @@ def create_new_task():
 
 @tasks_bp.route('/<int:task_id>', methods=['GET'])
 @token_required
+# get a single task by its id
 def get_single_task(task_id):
-    """Get a specific task by ID"""
     task = get_task_by_id(task_id, request.user_id)
     
     if not task:
@@ -189,13 +166,8 @@ def get_single_task(task_id):
 
 @tasks_bp.route('/<int:task_id>', methods=['PUT'])
 @token_required
+# update an existing task
 def update_existing_task(task_id):
-    """
-    Update an existing task
-    
-    Request Body (all optional):
-        - title, deadline, complexity, category, description
-    """
     data = request.get_json()
     
     if not data:
@@ -250,8 +222,8 @@ def update_existing_task(task_id):
 
 @tasks_bp.route('/<int:task_id>', methods=['DELETE'])
 @token_required
+# delete a task by id
 def delete_existing_task(task_id):
-    """Delete a task"""
     existing_task = get_task_by_id(task_id, request.user_id)
     if not existing_task:
         return jsonify({'error': 'Task not found'}), 404
@@ -266,8 +238,8 @@ def delete_existing_task(task_id):
 
 @tasks_bp.route('/<int:task_id>/complete', methods=['PATCH'])
 @token_required
+# mark a task as completed
 def mark_task_complete(task_id):
-    """Mark a task as completed"""
     existing_task = get_task_by_id(task_id, request.user_id)
     if not existing_task:
         return jsonify({'error': 'Task not found'}), 404

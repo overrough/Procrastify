@@ -19,6 +19,7 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
+[data-testid="stMarkdownContainer"] { caret-color: transparent; }
 
 .hero-header {
     background: #162231;

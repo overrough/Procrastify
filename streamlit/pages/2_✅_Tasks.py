@@ -1,13 +1,11 @@
-"""
-Procrastify — ✅ Tasks
-Create, view, complete, and delete tasks with priority display
-"""
+# tasks page create, view, complete and delete tasks
 import streamlit as st
 from datetime import date, timedelta
-from utils import api, require_auth, URGENCY_COLORS
+from utils import api, require_auth, URGENCY_COLORS, setup_sidebar
 
 st.set_page_config(page_title="Tasks | Procrastify", page_icon="✅", layout="wide")
 require_auth()
+setup_sidebar()
 
 # Block navigation if focus session is active
 if st.session_state.get("focus_active"):
@@ -16,11 +14,12 @@ if st.session_state.get("focus_active"):
         st.switch_page("pages/3_⏱️_Focus_Timer.py")
     st.stop()
 
-# ── Custom CSS ──────────────────────────────────────────
+# Custom CSS 
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
+[data-testid="stMarkdownContainer"] { caret-color: transparent; }
 
 .page-header {
     background: #162231;
@@ -62,7 +61,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ── Add Task ────────────────────────────────────────────
+# Add Task 
 with st.expander("➕ Add New Task", expanded=False):
     with st.form("add_task_form"):
         col1, col2 = st.columns(2)
@@ -92,8 +91,8 @@ with st.expander("➕ Add New Task", expanded=False):
 # ── Filter Tabs ─────────────────────────────────────────
 tab_pending, tab_completed, tab_all = st.tabs(["📋 Pending", "✅ Completed", "📁 All"])
 
+#fetch and display tasks based on filter
 def render_tasks(status_filter):
-    """Fetch and render tasks."""
     try:
         data, code = api.get_tasks(status_filter)
         if code != 200:
@@ -110,7 +109,7 @@ def render_tasks(status_filter):
         st.info("No tasks here yet!")
         return
 
-    # Summary bar — show different metrics per tab
+    # Summary bar show different per tab
     if summary:
         if status_filter == "pending":
             s1, s2 = st.columns(2)

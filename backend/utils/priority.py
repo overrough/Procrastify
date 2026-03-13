@@ -1,25 +1,9 @@
-"""
-Priority Algorithm for Procrastify
-Calculates task urgency based on deadline and complexity
-"""
+# priority algorithm - calculates task urgency
 from datetime import datetime, date
 
 
+# calculate priority score (lower = more urgent)
 def calculate_priority(deadline, complexity):
-    """
-    Calculate priority score for a task.
-    
-    Formula: Priority = Days Until Deadline × Complexity
-    
-    Lower score = Higher urgency (appears at top)
-    
-    Args:
-        deadline: Task deadline (date object or string 'YYYY-MM-DD')
-        complexity: Complexity level (1-5)
-    
-    Returns:
-        int: Priority score
-    """
     # Convert string to date if needed
     if isinstance(deadline, str):
         deadline = datetime.strptime(deadline, '%Y-%m-%d').date()
@@ -40,13 +24,8 @@ def calculate_priority(deadline, complexity):
     return priority_score
 
 
+# get urgency level and color for display
 def get_urgency_level(priority_score, days_remaining):
-    """
-    Determine urgency level for UI display.
-    
-    Returns:
-        tuple: (level, color) - e.g., ('HIGH', 'red')
-    """
     if priority_score == 0 or days_remaining <= 0:
         return ('OVERDUE', '#FF0000')  # Red
     elif days_remaining <= 2:
@@ -61,19 +40,8 @@ def get_urgency_level(priority_score, days_remaining):
         return ('RELAXED', '#90EE90')  # Green
 
 
+# calculate focus score from productive vs total time
 def calculate_focus_score(productive_time, total_time):
-    """
-    Calculate focus score based on productive vs total time.
-    
-    Formula: Focus Score = (Productive Time / Total Time) × 100
-    
-    Args:
-        productive_time: Time spent on productive apps (seconds or minutes)
-        total_time: Total screen time (same unit as productive_time)
-    
-    Returns:
-        tuple: (score, rating, color)
-    """
     if total_time <= 0:
         return (0, 'N/A', '#CCCCCC')
     
@@ -95,19 +63,8 @@ def calculate_focus_score(productive_time, total_time):
     return (score, rating, color)
 
 
+# get summary of task priorities by urgency level
 def get_task_priority_summary(tasks):
-    """
-    Get a summary of task priorities.
-    
-    Uses the pre-computed 'urgency_level' field on each task
-    (set by the route handler using live days_remaining).
-    
-    Args:
-        tasks: List of task dictionaries with urgency_level already set
-    
-    Returns:
-        dict: Summary with counts by urgency level
-    """
     summary = {
         'overdue': 0,
         'high': 0,

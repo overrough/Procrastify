@@ -119,6 +119,40 @@ def logout():
     st.switch_page("app.py")
 
 
+# ── Sidebar Branding ───────────────────────────────────
+def setup_sidebar():
+    """Replace the default 'app' sidebar header with Procrastify branding."""
+    st.markdown("""
+    <style>
+    /* Hide the default 'app' logo/title that Streamlit generates from filename */
+    [data-testid="stSidebarHeader"] {
+        display: none !important;
+    }
+    /* Add padding at top of sidebar nav to compensate */
+    section[data-testid="stSidebar"] > div:first-child {
+        padding-top: 0.5rem;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # Add branded header in sidebar
+    st.sidebar.markdown("""
+    <div style="
+        text-align: center;
+        padding: 1rem 0.5rem 0.75rem;
+        margin-bottom: 0.25rem;
+        border-bottom: 1px solid #1e3a4f;
+    ">
+        <div style="font-size: 1.5rem; font-weight: 700; color: #2dd4bf;">
+            🚀 Procrastify
+        </div>
+        <div style="font-size: 0.75rem; color: #94a3b8; margin-top: 0.25rem;">
+            Beat Procrastination
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+
 # ── Formatters ──────────────────────────────────────────
 def fmt_minutes(minutes):
     """Convert minutes to readable string like '2h 15m'."""

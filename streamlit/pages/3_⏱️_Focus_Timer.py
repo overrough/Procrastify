@@ -1,20 +1,18 @@
-"""
-Procrastify — ⏱️ Focus Timer
-Pomodoro countdown with session tracking
-When active — user is locked on this page
-"""
+# focus timer page pomodoro countdown with session tracking
 import streamlit as st
 import streamlit.components.v1 as components
-from utils import api, require_auth
+from utils import api, require_auth, setup_sidebar
 
 st.set_page_config(page_title="Focus Timer | Procrastify", page_icon="⏱️", layout="centered")
 require_auth()
+setup_sidebar()
 
-# ── CSS ─────────────────────────────────────────────────
+# CSS 
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
+[data-testid="stMarkdownContainer"] { caret-color: transparent; }
 .page-header {
     background: #162231;
     border: 1px solid #1e3a4f;
@@ -51,7 +49,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ── Session State ───────────────────────────────────────
+# Session State
 if "session_id" not in st.session_state:
     st.session_state.session_id = None
 if "focus_active" not in st.session_state:
@@ -59,7 +57,7 @@ if "focus_active" not in st.session_state:
 if "timer_duration" not in st.session_state:
     st.session_state.timer_duration = 25
 
-# ── When focus is active — hide sidebar nav ─────────────
+# When focus is active hide sidebar nav
 if st.session_state.focus_active:
     st.markdown("""
     <style>
@@ -69,10 +67,10 @@ if st.session_state.focus_active:
     """, unsafe_allow_html=True)
     st.info("🔒 Focus mode is ON — sidebar is hidden. Complete or end your session to navigate away.")
 
-# ── JS-based Timer ──────────────────────────────────────
+#JS-based Timer
 dur = st.session_state.timer_duration
 timer_html = f"""
-<div id="timer-wrap" style="text-align:center;padding:1.5rem;font-family:'Inter',sans-serif;">
+<div id="timer-wrap" style="text-align:center;padding:1.5rem;font-family:'Inter',sans-serif;caret-color:transparent;">
     <div id="timer-display" style="
         font-size:5rem;font-weight:700;color:#2dd4bf;margin-bottom:0.25rem;
     ">{dur:02d}:00</div>
@@ -129,7 +127,7 @@ timer_html = f"""
 """
 components.html(timer_html, height=320)
 
-# ── Server session controls ─────────────────────────────
+# Server session controls
 st.markdown("---")
 col1, col2 = st.columns(2)
 
@@ -167,7 +165,7 @@ with col2:
             st.warning("No server session found. Focus lock released.")
             st.rerun()
 
-# ── Tips ────────────────────────────────────────────────
+# Tips
 st.markdown("""
 <div class="tip-box">
     <strong>💡 Tips</strong><br>
@@ -177,7 +175,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ── Session History ─────────────────────────────────────
+# Session History 
 st.markdown("---")
 st.subheader("📜 Recent Sessions")
 try:

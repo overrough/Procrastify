@@ -1,7 +1,4 @@
-"""
-Analytics Routes for Procrastify
-Screen time tracking, focus scores, and productivity insights
-"""
+# analytics routesscreen time, focus scores and productivity
 from flask import Blueprint, request, jsonify
 from datetime import datetime, date, timedelta
 import sys
@@ -19,17 +16,8 @@ analytics_bp = Blueprint('analytics', __name__)
 
 @analytics_bp.route('/daily', methods=['GET'])
 @token_required
+# get today's analytics summary
 def get_daily_analytics():
-    """
-    Get today's analytics summary
-    
-    Returns:
-        - Focus score
-        - Productive vs distraction time
-        - Tasks completed
-        - Focus sessions
-        - Top apps
-    """
     user_id = request.user_id
     
     # Get daily stats
@@ -77,22 +65,15 @@ def get_daily_analytics():
         'distraction_time': stats.get('distraction_time', 0),
         'distraction_time_formatted': format_minutes(stats.get('distraction_time', 0)),
         'tasks_completed': stats.get('tasks_completed', 0),
-        'focus_sessions': stats.get('focus_sessions_completed', 0),
+        'focus_sessions_completed': stats.get('focus_sessions_completed', 0),
         'top_apps': top_apps
     }), 200
 
 
 @analytics_bp.route('/weekly', methods=['GET'])
 @token_required
+# get weekly analytics breakdown
 def get_weekly_analytics():
-    """
-    Get weekly analytics summary
-    
-    Returns:
-        - Daily breakdown for last 7 days
-        - Weekly averages
-        - Best day
-    """
     user_id = request.user_id
     
     # Get weekly stats
@@ -133,19 +114,8 @@ def get_weekly_analytics():
 
 @analytics_bp.route('/app-usage', methods=['POST'])
 @token_required
+# log app usage from mobile monitoring
 def log_app_usage_endpoint():
-    """
-    Log app usage from mobile monitoring
-    
-    Request Body:
-        - app_name: Name of the app
-        - duration_seconds: Time spent in seconds
-        - session_id: Current focus session ID (optional)
-    
-    Returns:
-        - Category assigned to the app
-        - Whether it's a distraction
-    """
     data = request.get_json()
     
     if not data:
@@ -190,19 +160,8 @@ def log_app_usage_endpoint():
 
 @analytics_bp.route('/check-distraction', methods=['POST'])
 @token_required
+# check if current app is a distraction
 def check_distraction():
-    """
-    Check if current app is a distraction and should trigger alert
-    
-    Request Body:
-        - app_name: Current active app
-        - time_on_app: Seconds spent on this app
-        - session_id: Current focus session (optional)
-    
-    Returns:
-        - Whether to show alert
-        - Alert details if needed
-    """
     data = request.get_json()
     
     if not data:
@@ -253,10 +212,8 @@ def check_distraction():
 
 @analytics_bp.route('/focus-score', methods=['GET'])
 @token_required
+# get current focus score with breakdown
 def get_focus_score():
-    """
-    Get current focus score with detailed breakdown
-    """
     stats = get_daily_stats(request.user_id)
     
     if not stats or stats.get('total_screen_time', 0) == 0:

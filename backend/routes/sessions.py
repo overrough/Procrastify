@@ -1,7 +1,4 @@
-"""
-Focus Session Routes for Procrastify
-Pomodoro timer and session management
-"""
+# focus session routes pomodoro timer and session management
 from flask import Blueprint, request, jsonify
 from datetime import datetime, date, timedelta
 import sys
@@ -18,17 +15,8 @@ sessions_bp = Blueprint('sessions', __name__)
 
 @sessions_bp.route('/start', methods=['POST'])
 @token_required
+# start a new focus session
 def start_session():
-    """
-    Start a new focus session (Pomodoro)
-    
-    Request Body:
-        - task_id: Optional task to associate with session
-        - duration: Session duration in minutes (default 25)
-    
-    Returns:
-        - Session ID and details
-    """
     data = request.get_json() or {}
     
     task_id = data.get('task_id')
@@ -72,19 +60,8 @@ def start_session():
 
 @sessions_bp.route('/end', methods=['POST'])
 @token_required
+# end a focus session and save results
 def end_session():
-    """
-    End a focus session
-    
-    Request Body:
-        - session_id: Session to end
-        - completed: Whether session was completed fully
-        - interruptions: Number of interruptions
-        - focus_score: Calculated focus score for this session
-    
-    Returns:
-        - Session summary
-    """
     data = request.get_json()
     
     if not data:
@@ -110,10 +87,20 @@ def end_session():
     if result is None:
         return jsonify({'error': 'Failed to end session'}), 500
     
-    # Update daily stats
+    # Update daily stats with actual session duration
     if completed:
+        # Get the session to read its computed duration
+        sessions_list = get_user_sessions(request.user_id, 1)
+        session_duration = 0
+        if sessions_list:
+            for s in sessions_list:
+                if s.get('session_id') == session_id:
+                    session_duration = s.get('duration_minutes', 0) or 0
+                    break
+        
         update_daily_stats(
             user_id=request.user_id,
+            productive_time=session_duration,
             sessions_completed=1
         )
     
@@ -142,16 +129,8 @@ def end_session():
 
 @sessions_bp.route('/history', methods=['GET'])
 @token_required
+# getrecent focus session history
 def get_session_history():
-    """
-    Get recent focus sessions
-    
-    Query Parameters:
-        - limit: Number of sessions to return (default 10)
-    
-    Returns:
-        - List of recent sessions
-    """
     limit = request.args.get('limit', 10, type=int)
     
     sessions = get_user_sessions(request.user_id, limit)
@@ -174,14 +153,8 @@ def get_session_history():
 
 @sessions_bp.route('/streak', methods=['GET'])
 @token_required
+# get currentfocus session streak
 def get_streak():
-    """
-    Get current focus session streak
-    
-    Returns:
-        - Current streak count
-        - Streak status
-    """
     streak_data = get_session_streak(request.user_id)
     streak = streak_data.get('streak', 0) if streak_data else 0
     
@@ -215,10 +188,8 @@ def get_streak():
 
 @sessions_bp.route('/stats', methods=['GET'])
 @token_required
+# get overall session statistics
 def get_session_stats():
-    """
-    Get overall session statistics
-    """
     sessions = get_user_sessions(request.user_id, 100) or []
     
     total_sessions = len(sessions)

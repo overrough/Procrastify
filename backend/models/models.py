@@ -1,13 +1,11 @@
-"""
-Database Models and Connection for Procrastify
-"""
+# database models and connection for procrastify
 import mysql.connector
 from mysql.connector import Error
 from config import current_config
 
 
+# create and return mysql connection
 def get_db_connection():
-    """Create and return a MySQL database connection"""
     try:
         connection = mysql.connector.connect(
             host=current_config.MYSQL_HOST,
@@ -22,8 +20,8 @@ def get_db_connection():
         return None
 
 
+# run a mysql query with connection handling
 def execute_query(query, params=None, fetch=False, fetch_one=False):
-    """Execute a MySQL query with proper connection handling"""
     connection = get_db_connection()
     if not connection:
         return None
@@ -49,8 +47,8 @@ def execute_query(query, params=None, fetch=False, fetch_one=False):
 
 
 # User Model Functions
+# create a new user in the database
 def create_user(email, password_hash, name):
-    """Create a new user"""
     query = """
         INSERT INTO users (email, password_hash, name)
         VALUES (%s, %s, %s)
@@ -58,27 +56,27 @@ def create_user(email, password_hash, name):
     return execute_query(query, (email, password_hash, name))
 
 
+# get user by email
 def get_user_by_email(email):
-    """Get user by email"""
     query = "SELECT * FROM users WHERE email = %s"
     return execute_query(query, (email,), fetch_one=True)
 
 
+# get user by id
 def get_user_by_id(user_id):
-    """Get user by ID"""
     query = "SELECT user_id, email, name, created_at, last_login FROM users WHERE user_id = %s"
     return execute_query(query, (user_id,), fetch_one=True)
 
 
+# update last login time
 def update_last_login(user_id):
-    """Update user's last login timestamp"""
     query = "UPDATE users SET last_login = NOW() WHERE user_id = %s"
     return execute_query(query, (user_id,))
 
 
 # Task Model Functions
+# create a new task
 def create_task(user_id, title, deadline, complexity, category, priority_score, description=None):
-    """Create a new task"""
     query = """
         INSERT INTO tasks (user_id, title, description, deadline, complexity, category, priority_score)
         VALUES (%s, %s, %s, %s, %s, %s, %s)
@@ -86,8 +84,8 @@ def create_task(user_id, title, deadline, complexity, category, priority_score, 
     return execute_query(query, (user_id, title, description, deadline, complexity, category, priority_score))
 
 
+# get all tasks for a user sorted by priority
 def get_tasks_by_user(user_id, status=None):
-    """Get all tasks for a user, sorted by priority"""
     if status:
         query = """
             SELECT * FROM tasks 
@@ -104,14 +102,14 @@ def get_tasks_by_user(user_id, status=None):
         return execute_query(query, (user_id,), fetch=True)
 
 
+# get a specific task by id
 def get_task_by_id(task_id, user_id):
-    """Get a specific task"""
     query = "SELECT * FROM tasks WHERE task_id = %s AND user_id = %s"
     return execute_query(query, (task_id, user_id), fetch_one=True)
 
 
+# update a task
 def update_task(task_id, user_id, **kwargs):
-    """Update a task"""
     allowed_fields = ['title', 'description', 'deadline', 'complexity', 'category', 'priority_score', 'status']
     updates = []
     values = []
@@ -129,8 +127,8 @@ def update_task(task_id, user_id, **kwargs):
     return execute_query(query, tuple(values))
 
 
+# mark task as completed
 def complete_task(task_id, user_id):
-    """Mark a task as completed"""
     query = """
         UPDATE tasks 
         SET status = 'completed', completed_at = NOW() 
@@ -139,15 +137,15 @@ def complete_task(task_id, user_id):
     return execute_query(query, (task_id, user_id))
 
 
+# delete task
 def delete_task(task_id, user_id):
-    """Delete a task"""
     query = "DELETE FROM tasks WHERE task_id = %s AND user_id = %s"
     return execute_query(query, (task_id, user_id))
 
 
 # Focus Session Model Functions
+# start a new focus session
 def create_focus_session(user_id, task_id=None):
-    """Start a new focus session"""
     query = """
         INSERT INTO focus_sessions (user_id, task_id, start_time)
         VALUES (%s, %s, NOW())
@@ -155,8 +153,8 @@ def create_focus_session(user_id, task_id=None):
     return execute_query(query, (user_id, task_id))
 
 
+# end a focus session and save data
 def end_focus_session(session_id, user_id, completed, interruptions, focus_score):
-    """End a focus session"""
     query = """
         UPDATE focus_sessions 
         SET end_time = NOW(), 
@@ -169,8 +167,8 @@ def end_focus_session(session_id, user_id, completed, interruptions, focus_score
     return execute_query(query, (completed, interruptions, focus_score, session_id, user_id))
 
 
+# get recent focus sessions for a user
 def get_user_sessions(user_id, limit=10):
-    """Get recent focus sessions for a user"""
     query = """
         SELECT fs.*, t.title as task_title 
         FROM focus_sessions fs
@@ -182,8 +180,8 @@ def get_user_sessions(user_id, limit=10):
     return execute_query(query, (user_id, limit), fetch=True)
 
 
+# get consecutive days with completed sessions
 def get_session_streak(user_id):
-    """Get consecutive days with completed sessions"""
     query = """
         SELECT COUNT(DISTINCT DATE(start_time)) as streak
         FROM focus_sessions
@@ -194,8 +192,8 @@ def get_session_streak(user_id):
 
 
 # App Usage Model Functions
+# log app usage data
 def log_app_usage(user_id, app_name, app_category, duration_seconds, session_id=None):
-    """Log app usage"""
     query = """
         INSERT INTO app_usage (user_id, session_id, app_name, app_category, duration_seconds)
         VALUES (%s, %s, %s, %s, %s)
@@ -203,8 +201,8 @@ def log_app_usage(user_id, app_name, app_category, duration_seconds, session_id=
     return execute_query(query, (user_id, session_id, app_name, app_category, duration_seconds))
 
 
+# get app usage statsof today
 def get_app_usage_today(user_id):
-    """Get today's app usage"""
     query = """
         SELECT app_name, app_category, SUM(duration_seconds) as total_seconds
         FROM app_usage
@@ -216,8 +214,8 @@ def get_app_usage_today(user_id):
 
 
 # Daily Stats Model Functions
+# update or create daily stats
 def update_daily_stats(user_id, productive_time=0, distraction_time=0, tasks_completed=0, sessions_completed=0):
-    """Update or create daily stats"""
     query = """
         INSERT INTO daily_stats (user_id, date, total_screen_time, productive_time, distraction_time, 
                                  focus_score, tasks_completed, focus_sessions_completed)
@@ -238,8 +236,8 @@ def update_daily_stats(user_id, productive_time=0, distraction_time=0, tasks_com
     ))
 
 
+# get daily stats for a user
 def get_daily_stats(user_id, date=None):
-    """Get daily stats"""
     if date:
         query = "SELECT * FROM daily_stats WHERE user_id = %s AND date = %s"
         return execute_query(query, (user_id, date), fetch_one=True)
@@ -248,8 +246,8 @@ def get_daily_stats(user_id, date=None):
         return execute_query(query, (user_id,), fetch_one=True)
 
 
+# get stats for last 7 days
 def get_weekly_stats(user_id):
-    """Get stats for the last 7 days"""
     query = """
         SELECT * FROM daily_stats 
         WHERE user_id = %s AND date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
@@ -259,8 +257,8 @@ def get_weekly_stats(user_id):
 
 
 # Distraction Alert Model Functions
+# log a distraction alert
 def create_distraction_alert(user_id, session_id, app_name, alert_type, message, time_on_app):
-    """Log a distraction alert"""
     query = """
         INSERT INTO distraction_alerts (user_id, session_id, app_name, alert_type, message, time_on_app)
         VALUES (%s, %s, %s, %s, %s, %s)
@@ -268,22 +266,22 @@ def create_distraction_alert(user_id, session_id, app_name, alert_type, message,
     return execute_query(query, (user_id, session_id, app_name, alert_type, message, time_on_app))
 
 
+# update user response to alert
 def update_alert_response(alert_id, response):
-    """Update user's response to alert"""
     query = "UPDATE distraction_alerts SET user_response = %s WHERE alert_id = %s"
     return execute_query(query, (response, alert_id))
 
 
 # App Categories Model Functions
+# get category for an app
 def get_app_category(user_id, app_name):
-    """Get category for an app"""
     query = "SELECT category FROM app_categories WHERE user_id = %s AND app_name = %s"
     result = execute_query(query, (user_id, app_name), fetch_one=True)
     return result['category'] if result else 'neutral'
 
 
+# set or update app category
 def set_app_category(user_id, app_name, category):
-    """Set or update category for an app"""
     query = """
         INSERT INTO app_categories (user_id, app_name, category, is_custom)
         VALUES (%s, %s, %s, TRUE)
@@ -292,8 +290,34 @@ def set_app_category(user_id, app_name, category):
     return execute_query(query, (user_id, app_name, category, category))
 
 
+# get list of distraction apps
 def get_distraction_apps(user_id):
-    """Get list of distraction apps"""
     query = "SELECT app_name FROM app_categories WHERE user_id = %s AND category = 'distraction'"
     result = execute_query(query, (user_id,), fetch=True)
     return [r['app_name'] for r in result] if result else []
+
+
+# setup default app categories when a new user registers
+def setup_default_categories(user_id):
+    default_apps = [
+        ('VS Code', 'productive'),
+        ('PyCharm', 'productive'),
+        ('Google Docs', 'productive'),
+        ('Microsoft Word', 'productive'),
+        ('Excel', 'productive'),
+        ('Google Classroom', 'productive'),
+        ('Instagram', 'distraction'),
+        ('YouTube', 'distraction'),
+        ('TikTok', 'distraction'),
+        ('WhatsApp', 'distraction'),
+        ('Facebook', 'distraction'),
+        ('Twitter', 'distraction'),
+        ('Netflix', 'distraction'),
+        ('Snapchat', 'distraction'),
+    ]
+    for app_name, category in default_apps:
+        query = """
+            INSERT INTO app_categories (user_id, app_name, category, is_custom)
+            VALUES (%s, %s, %s, FALSE)
+        """
+        execute_query(query, (user_id, app_name, category))

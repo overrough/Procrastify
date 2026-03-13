@@ -1,30 +1,16 @@
-"""
-Authentication Routes for Procrastify
-Handles user registration, login, and profile
-"""
+# authentication routes andles registration, login and profile
 from flask import Blueprint, request, jsonify
 import sys
 sys.path.append('..')
-from models.models import create_user, get_user_by_email, get_user_by_id, update_last_login
+from models.models import create_user, get_user_by_email, get_user_by_id, update_last_login, setup_default_categories
 from utils.auth_utils import hash_password, verify_password, generate_token, token_required
 
 auth_bp = Blueprint('auth', __name__)
 
 
 @auth_bp.route('/register', methods=['POST'])
+# register new user and return JWT token
 def register():
-    """
-    Register a new user
-    
-    Request Body:
-        - email: User's email address
-        - password: User's password (min 6 characters)
-        - name: User's display name
-    
-    Returns:
-        - Success: User info and JWT token
-        - Error: Error message
-    """
     data = request.get_json()
     
     # Validate required fields
@@ -59,6 +45,9 @@ def register():
     if not user_id:
         return jsonify({'error': 'Failed to create user'}), 500
     
+    # load default app categories for this user
+    setup_default_categories(user_id)
+    
     # Generate JWT token
     token = generate_token(user_id, email)
     
@@ -74,18 +63,8 @@ def register():
 
 
 @auth_bp.route('/login', methods=['POST'])
+# login user and return JWT token
 def login():
-    """
-    Login user and return JWT token
-    
-    Request Body:
-        - email: User's email
-        - password: User's password
-    
-    Returns:
-        - Success: User info and JWT token
-        - Error: Error message
-    """
     data = request.get_json()
     
     if not data:
@@ -125,16 +104,8 @@ def login():
 
 @auth_bp.route('/profile', methods=['GET'])
 @token_required
+# get current user profile (needs auth token)
 def get_profile():
-    """
-    Get current user's profile (requires authentication)
-    
-    Headers:
-        - Authorization: Bearer <token>
-    
-    Returns:
-        - User profile info
-    """
     user = get_user_by_id(request.user_id)
     
     if not user:
@@ -147,17 +118,8 @@ def get_profile():
 
 @auth_bp.route('/verify', methods=['GET'])
 @token_required
+# verify if the JWT token is valid
 def verify_token():
-    """
-    Verify if the JWT token is valid
-    
-    Headers:
-        - Authorization: Bearer <token>
-    
-    Returns:
-        - Valid: User ID and email
-        - Invalid: 401 error
-    """
     return jsonify({
         'valid': True,
         'user_id': request.user_id,

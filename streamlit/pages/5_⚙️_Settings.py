@@ -1,12 +1,10 @@
-"""
-Procrastify — ⚙️ Settings
-Profile, preferences, and logout
-"""
+# settings page profile, preferences and logout
 import streamlit as st
-from utils import api, require_auth, logout
+from utils import api, require_auth, logout, setup_sidebar
 
 st.set_page_config(page_title="Settings | Procrastify", page_icon="⚙️", layout="centered")
 require_auth()
+setup_sidebar()
 
 # Block navigation if focus session is active
 if st.session_state.get("focus_active"):
@@ -20,6 +18,7 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
+[data-testid="stMarkdownContainer"] { caret-color: transparent; }
 .page-header {
     background: #162231;
     border: 1px solid #1e3a4f;

@@ -21,7 +21,7 @@ class Config:
     MYSQL_PORT = int(os.environ.get('MYSQL_PORT', 3306))
     
     # CORS Settings
-    CORS_ORIGINS = ['*']  # Allow all origins for mobile app
+    CORS_ORIGINS = ['*']  # Allow all origins
     
     # App Settings
     DEFAULT_POMODORO_DURATION = 25  # minutes

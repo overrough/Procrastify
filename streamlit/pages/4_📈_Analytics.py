@@ -1,13 +1,11 @@
-"""
-Procrastify — 📈 Analytics
-View daily/weekly stats and charts
-"""
+# analytics page daily and weekly stats with charts
 import streamlit as st
 import plotly.graph_objects as go
-from utils import api, require_auth
+from utils import api, require_auth, setup_sidebar
 
 st.set_page_config(page_title="Analytics | Procrastify", page_icon="📈", layout="wide")
 require_auth()
+setup_sidebar()
 
 # Block navigation if focus session is active
 if st.session_state.get("focus_active"):
@@ -16,11 +14,12 @@ if st.session_state.get("focus_active"):
         st.switch_page("pages/3_⏱️_Focus_Timer.py")
     st.stop()
 
-# ── CSS ─────────────────────────────────────────────────
+# CSS
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
+[data-testid="stMarkdownContainer"] { caret-color: transparent; }
 .page-header {
     background: #162231;
     border: 1px solid #1e3a4f;
@@ -49,7 +48,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ── Today's Stats ───────────────────────────────────────
+# Today's Stats
 st.subheader("📅 Today's Summary")
 
 focus_score = 0
@@ -81,7 +80,7 @@ with c3:
 with c4:
     st.markdown(f'<div class="stat-card"><div class="value">{sessions_done}</div><div class="label">Sessions</div></div>', unsafe_allow_html=True)
 
-# ── Time Breakdown Chart ────────────────────────────────
+# Time Breakdown Chart
 st.markdown("---")
 st.subheader("⏰ Time Breakdown")
 
@@ -106,7 +105,7 @@ if total_time > 0:
 else:
     st.info("No time data yet — complete a focus session to see your breakdown!")
 
-# ── Weekly Trend ────────────────────────────────────────
+# Weekly Trend
 st.markdown("---")
 st.subheader("📊 Weekly Focus Trend")
 
@@ -153,7 +152,7 @@ try:
 except Exception:
     st.info("No weekly data available yet.")
 
-# ── Session Stats ───────────────────────────────────────
+# Session Stats
 st.markdown("---")
 st.subheader("🏆 Focus Session Stats")
 

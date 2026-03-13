@@ -1,25 +1,24 @@
-"""
-Procrastify — 📊 Dashboard
-Overview with focus score, tasks, and daily stats
-"""
+# dashboard page overview withfocus score, tasks and stats
 import streamlit as st
-from utils import api, require_auth
+from utils import api, require_auth, setup_sidebar
 
 st.set_page_config(page_title="Dashboard | Procrastify", page_icon="📊", layout="wide")
 require_auth()
+setup_sidebar()
 
-# ── Check if focus session is active — redirect back ────
+# Check if focus session is active redirect back 
 if st.session_state.get("focus_active"):
     st.warning("⚠️ You have an active focus session! Go back to the timer to finish it.")
     if st.button("⏱️ Go to Focus Timer"):
         st.switch_page("pages/3_⏱️_Focus_Timer.py")
     st.stop()
 
-# ── CSS ─────────────────────────────────────────────────
+# CSS 
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
+[data-testid="stMarkdownContainer"] { caret-color: transparent; }
 .page-header {
     background: #162231;
     border: 1px solid #1e3a4f;
@@ -51,7 +50,7 @@ html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
 </style>
 """, unsafe_allow_html=True)
 
-# ── Header ──────────────────────────────────────────────
+#  Header 
 user = st.session_state.get("user", {})
 name = user.get("name", "Student")
 
@@ -62,7 +61,7 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# ── Fetch data ──────────────────────────────────────────
+#Fetch data 
 focus_score = 0
 pending = 0
 completed_today = 0
@@ -90,6 +89,8 @@ try:
     td, _ = api.get_tasks("pending")
     tasks_list = td.get("tasks", []) if isinstance(td, dict) else []
     pending = len(tasks_list)
+    # Sort by days_remaining (closest deadline first) so urgent tasks show on top
+    tasks_list.sort(key=lambda t: t.get("days_remaining", 999))
     top_tasks = tasks_list[:3]
 except Exception:
     pass
@@ -102,7 +103,7 @@ try:
 except Exception:
     pass
 
-# ── Stat Cards ──────────────────────────────────────────
+# Stat Cards
 c1, c2, c3, c4 = st.columns(4)
 
 with c1:
@@ -134,7 +135,7 @@ with c4:
         <div class="label">Day Streak</div>
     </div>""", unsafe_allow_html=True)
 
-# ── Priority Tasks + Today's Stats ──────────────────────
+# Priority Tasks +Todays Stats
 st.markdown("---")
 col_left, col_right = st.columns([3, 2])
 
@@ -143,10 +144,12 @@ with col_left:
     if top_tasks:
         for t in top_tasks:
             days = t.get("days_remaining", "?")
-            days_txt = f"{days}d left" if isinstance(days, int) and days >= 0 else "overdue"
+            days_txt = f"{days}d left" if isinstance(days, int) and days >= 0 else "⚠️ overdue"
+            level = t.get("urgency_level", "LOW").upper()
+            dot = "🔴" if level in ("OVERDUE", "HIGH") else "🟠" if level == "MEDIUM" else "🟢"
             st.markdown(f"""
             <div class="task-item">
-                <div>🟢 <strong>{t.get('title','Untitled')}</strong></div>
+                <div>{dot} <strong>{t.get('title','Untitled')}</strong></div>
                 <div style="opacity:0.6;font-size:0.85rem">{t.get('category','—')} · {days_txt}</div>
             </div>""", unsafe_allow_html=True)
     else:

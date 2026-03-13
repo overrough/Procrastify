@@ -1,7 +1,4 @@
-"""
-Procrastify v2.0 - Flask Backend API
-Main Application Entry Point
-"""
+# procrastify flask backend main entry point
 from flask import Flask, jsonify
 from flask_cors import CORS
 from config import current_config
@@ -13,8 +10,8 @@ from routes.analytics import analytics_bp
 from routes.sessions import sessions_bp
 
 
+# create and configure the flask app
 def create_app():
-    """Create and configure the Flask application"""
     app = Flask(__name__)
     
     # Load configuration
@@ -35,7 +32,7 @@ def create_app():
     def index():
         return jsonify({
             'app': 'Procrastify API',
-            'version': '2.0',
+            'version': '1.0',
             'status': 'running',
             'endpoints': {
                 'auth': '/api/auth',
@@ -69,7 +66,7 @@ if __name__ == '__main__':
     print("""
     ===========================================================
     |                                                           |
-    |   PROCRASTIFY v2.0 API SERVER                             |
+    |   PROCRASTIFY API SERVER                                  |
     |                                                           |
     |   Server running at: http://localhost:5000                |
     |                                                           |

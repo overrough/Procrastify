@@ -1,7 +1,4 @@
-"""
-Authentication Utilities for Procrastify
-JWT Token and Password Hashing
-"""
+# auth utilitiesJWT token and password hashing
 import bcrypt
 import jwt
 from datetime import datetime, timedelta
@@ -10,19 +7,19 @@ from flask import request, jsonify
 from config import current_config
 
 
+# hash password using bcrypt
 def hash_password(password):
-    """Hash a password using bcrypt"""
     salt = bcrypt.gensalt()
     return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
 
 
+# check password matches the hash
 def verify_password(password, password_hash):
-    """Verify a password against its hash"""
     return bcrypt.checkpw(password.encode('utf-8'), password_hash.encode('utf-8'))
 
 
+# generate JWT token
 def generate_token(user_id, email):
-    """Generate a JWT token for a user"""
     payload = {
         'user_id': user_id,
         'email': email,
@@ -32,8 +29,8 @@ def generate_token(user_id, email):
     return jwt.encode(payload, current_config.JWT_SECRET_KEY, algorithm='HS256')
 
 
+# verify JWT token
 def decode_token(token):
-    """Decode and verify a JWT token"""
     try:
         payload = jwt.decode(token, current_config.JWT_SECRET_KEY, algorithms=['HS256'])
         return payload
@@ -43,8 +40,8 @@ def decode_token(token):
         return None
 
 
+# check JWT token on protected routes
 def token_required(f):
-    """Decorator to require valid JWT token for protected routes"""
     @wraps(f)
     def decorated(*args, **kwargs):
         token = None

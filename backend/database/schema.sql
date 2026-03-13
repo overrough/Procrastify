@@ -1,4 +1,4 @@
--- Procrastify v2.0 Database Schema
+-- Procrastify Database Schema
 -- Run this in phpMyAdmin or MySQL Workbench
 
 CREATE DATABASE IF NOT EXISTS procrastify;
@@ -99,22 +99,8 @@ CREATE TABLE app_categories (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
--- Insert default app categories (global defaults)
-INSERT INTO app_categories (user_id, app_name, category, is_custom) VALUES
-(1, 'VS Code', 'productive', FALSE),
-(1, 'PyCharm', 'productive', FALSE),
-(1, 'Google Docs', 'productive', FALSE),
-(1, 'Microsoft Word', 'productive', FALSE),
-(1, 'Excel', 'productive', FALSE),
-(1, 'Google Classroom', 'productive', FALSE),
-(1, 'Instagram', 'distraction', FALSE),
-(1, 'YouTube', 'distraction', FALSE),
-(1, 'TikTok', 'distraction', FALSE),
-(1, 'WhatsApp', 'distraction', FALSE),
-(1, 'Facebook', 'distraction', FALSE),
-(1, 'Twitter', 'distraction', FALSE),
-(1, 'Netflix', 'distraction', FALSE),
-(1, 'Snapchat', 'distraction', FALSE);
+-- Default categories are loaded automatically by the
+-- backend when a new user registers. See models.py
 
 -- Create indexes for performance
 CREATE INDEX idx_tasks_user ON tasks(user_id);
