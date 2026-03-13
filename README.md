@@ -40,11 +40,6 @@ procrastify/
 │   ├── app.py               # Login/Register page
 │   ├── utils.py             # API client & helpers
 │   └── pages/               # Dashboard, Tasks, Timer, Analytics, Settings
-│
-└── mobile/                  # Kivy Mobile App (experimental)
-    ├── main.py              # Entry point
-    ├── screens/             # All app screens
-    └── services/            # API communication
 ```
 
 ## How to Run
