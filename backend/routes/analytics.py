@@ -16,7 +16,7 @@ analytics_bp = Blueprint('analytics', __name__)
 
 @analytics_bp.route('/daily', methods=['GET'])
 @token_required
-# get today's analytics summary
+# get todayanalytics summary
 def get_daily_analytics():
     user_id = request.user_id
     
@@ -170,7 +170,7 @@ def check_distraction():
     app_name = data.get('app_name', '')
     time_on_app = data.get('time_on_app', 0)
     session_id = data.get('session_id')
-    threshold = data.get('threshold', 300)  # 5 minutes default
+    threshold = data.get('threshold', 300)
     
     # Get distraction apps
     distraction_apps = get_distraction_apps(request.user_id)

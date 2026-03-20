@@ -1,46 +1,46 @@
-# priority algorithm - calculates task urgency
+# calc urgency
 from datetime import datetime, date
 
 
-# calculate priority score (lower = more urgent)
+# calc priority
 def calculate_priority(deadline, complexity):
-    # Convert string to date if needed
+    # format date
     if isinstance(deadline, str):
         deadline = datetime.strptime(deadline, '%Y-%m-%d').date()
     elif isinstance(deadline, datetime):
         deadline = deadline.date()
     
-    # Calculate days remaining
+    # calc days remaining
     today = date.today()
     days_remaining = (deadline - today).days
     
-    # Handle overdue tasks (highest priority)
+    # overdue tasks
     if days_remaining <= 0:
-        return 0  # Overdue = maximum urgency
+        return 0
     
-    # Calculate priority score
+    # calc. priority
     priority_score = days_remaining * complexity
     
     return priority_score
 
 
-# get urgency level and color for display
+# get urgency nd color
 def get_urgency_level(priority_score, days_remaining):
     if priority_score == 0 or days_remaining <= 0:
-        return ('OVERDUE', '#FF0000')  # Red
+        return ('OVERDUE', '#FF0000')
     elif days_remaining <= 2:
-        return ('HIGH', '#FF4444')  # Red-Orange
+        return ('HIGH', '#FF4444')
     elif priority_score <= 10:
-        return ('HIGH', '#FF6B35')  # Orange
+        return ('HIGH', '#FF6B35')
     elif priority_score <= 20:
-        return ('MEDIUM', '#FFB347')  # Light Orange
+        return ('MEDIUM', '#FFB347')
     elif priority_score <= 35:
-        return ('LOW', '#77DD77')  # Light Green
+        return ('LOW', '#77DD77')
     else:
-        return ('RELAXED', '#90EE90')  # Green
+        return ('RELAXED', '#90EE90')
 
 
-# calculate focus score from productive vs total time
+# calc. focus score
 def calculate_focus_score(productive_time, total_time):
     if total_time <= 0:
         return (0, 'N/A', '#CCCCCC')
@@ -49,21 +49,21 @@ def calculate_focus_score(productive_time, total_time):
     
     if score >= 80:
         rating = 'EXCELLENT 🌟'
-        color = '#4CAF50'  # Green
+        color = '#4CAF50'
     elif score >= 60:
         rating = 'GOOD 👍'
-        color = '#8BC34A'  # Light Green
+        color = '#8BC34A'
     elif score >= 40:
         rating = 'FAIR ⚠️'
-        color = '#FF9800'  # Orange
+        color = '#FF9800'
     else:
         rating = 'POOR ❌'
-        color = '#F44336'  # Red
+        color = '#F44336'
     
     return (score, rating, color)
 
 
-# get summary of task priorities by urgency level
+# get summary
 def get_task_priority_summary(tasks):
     summary = {
         'overdue': 0,

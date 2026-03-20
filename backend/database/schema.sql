@@ -1,51 +1,48 @@
 -- Procrastify Database Schema
--- Run this in phpMyAdmin or MySQL Workbench
+-- Compatible with older MySQL versions (no CHECK constraints, TIMESTAMP defaults)
 
-CREATE DATABASE IF NOT EXISTS procrastify;
-USE procrastify;
-
--- Table 1: USERS - User authentication and profile
+-- Table 1: User authentication and profile
 CREATE TABLE users (
     user_id INT PRIMARY KEY AUTO_INCREMENT,
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     name VARCHAR(100) NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    last_login DATETIME DEFAULT NULL
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_login TIMESTAMP NULL DEFAULT NULL
 );
 
--- Table 2: TASKS - Task information with priority
+-- Table 2: Task information with priority
 CREATE TABLE tasks (
     task_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
     title VARCHAR(255) NOT NULL,
     description TEXT,
     deadline DATE NOT NULL,
-    complexity INT CHECK (complexity BETWEEN 1 AND 5),
+    complexity INT DEFAULT 3,
     category ENUM('Study', 'Personal', 'Work', 'Other') DEFAULT 'Study',
     priority_score INT,
     status ENUM('pending', 'completed') DEFAULT 'pending',
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    completed_at DATETIME DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    completed_at TIMESTAMP NULL DEFAULT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
--- Table 3: FOCUS_SESSIONS - Pomodoro session tracking
+-- Table 3: FOCUS_SESSIONS Pomodoro time session tracking
 CREATE TABLE focus_sessions (
     session_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
     task_id INT,
-    start_time DATETIME NOT NULL,
-    end_time DATETIME,
+    start_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    end_time TIMESTAMP NULL DEFAULT NULL,
     duration_minutes INT DEFAULT 0,
     completed BOOLEAN DEFAULT FALSE,
     interruptions INT DEFAULT 0,
-    focus_score INT CHECK (focus_score BETWEEN 0 AND 100),
+    focus_score INT DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (task_id) REFERENCES tasks(task_id) ON DELETE SET NULL
 );
 
--- Table 4: APP_USAGE - Granular app monitoring logs
+-- Table 4: APP_USAGE Granular app monitoring logs
 CREATE TABLE app_usage (
     usage_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
@@ -53,27 +50,27 @@ CREATE TABLE app_usage (
     app_name VARCHAR(100) NOT NULL,
     app_category ENUM('productive', 'distraction', 'neutral') DEFAULT 'neutral',
     duration_seconds INT DEFAULT 0,
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (session_id) REFERENCES focus_sessions(session_id) ON DELETE SET NULL
 );
 
--- Table 5: DAILY_STATS - Aggregated daily metrics
+-- Table 5: DAILY_STATS Aggregated daily metrics
 CREATE TABLE daily_stats (
     stat_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
     date DATE NOT NULL,
-    total_screen_time INT DEFAULT 0,  -- in minutes
-    productive_time INT DEFAULT 0,     -- in minutes
-    distraction_time INT DEFAULT 0,    -- in minutes
-    focus_score INT CHECK (focus_score BETWEEN 0 AND 100),
+    total_screen_time INT DEFAULT 0,
+    productive_time INT DEFAULT 0,
+    distraction_time INT DEFAULT 0,
+    focus_score INT DEFAULT 0,
     tasks_completed INT DEFAULT 0,
     focus_sessions_completed INT DEFAULT 0,
     UNIQUE KEY unique_user_date (user_id, date),
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
--- Table 6: DISTRACTION_ALERTS - Alert history
+-- Table 6: DISTRACTION_ALERTS Alert history
 CREATE TABLE distraction_alerts (
     alert_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
@@ -81,14 +78,14 @@ CREATE TABLE distraction_alerts (
     app_name VARCHAR(100) NOT NULL,
     alert_type ENUM('warning', 'critical', 'info') DEFAULT 'warning',
     message TEXT,
-    time_on_app INT DEFAULT 0,  -- in seconds
+    time_on_app INT DEFAULT 0,
     user_response ENUM('refocus', 'continue', 'break', 'ignored') DEFAULT 'ignored',
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (session_id) REFERENCES focus_sessions(session_id) ON DELETE SET NULL
 );
 
--- Table 7: APP_CATEGORIES - User-defined app classifications
+-- Table 7: APP_CATEGORIES User-defined app classifications
 CREATE TABLE app_categories (
     category_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
@@ -98,9 +95,6 @@ CREATE TABLE app_categories (
     UNIQUE KEY unique_user_app (user_id, app_name),
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
-
--- Default categories are loaded automatically by the
--- backend when a new user registers. See models.py
 
 -- Create indexes for performance
 CREATE INDEX idx_tasks_user ON tasks(user_id);

@@ -118,7 +118,7 @@ def get_profile():
 
 @auth_bp.route('/verify', methods=['GET'])
 @token_required
-# verify if the JWT token is valid
+# verify the JWT token is valid
 def verify_token():
     return jsonify({
         'valid': True,

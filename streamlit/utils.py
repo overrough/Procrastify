@@ -1,11 +1,12 @@
 """
 Procrastify - Streamlit Utilities
-API client, auth helpers, and formatters
+API client, auth helpers
 """
 import streamlit as st
 import requests
 
-API_BASE = "http://localhost:5000/api"
+import os
+API_BASE = os.environ.get("API_BASE_URL", "http://localhost:5000/api")
 
 
 class ProcrastifyAPI:
@@ -21,7 +22,7 @@ class ProcrastifyAPI:
             return {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
         return {"Content-Type": "application/json"}
 
-    # ── Auth ────────────────────────────────────────────
+    # Auth
     def register(self, name, email, password):
         r = requests.post(f"{self.base}/auth/register",
                           json={"name": name, "email": email, "password": password})
@@ -36,7 +37,7 @@ class ProcrastifyAPI:
         r = requests.get(f"{self.base}/auth/profile", headers=self._headers)
         return r.json(), r.status_code
 
-    # ── Tasks ───────────────────────────────────────────
+    # Tasks
     def get_tasks(self, status="pending"):
         r = requests.get(f"{self.base}/tasks", headers=self._headers,
                          params={"status": status})
@@ -57,7 +58,7 @@ class ProcrastifyAPI:
         r = requests.delete(f"{self.base}/tasks/{task_id}", headers=self._headers)
         return r.json(), r.status_code
 
-    # ── Analytics ───────────────────────────────────────
+    # Analytics
     def get_daily_analytics(self):
         r = requests.get(f"{self.base}/analytics/daily", headers=self._headers)
         return r.json(), r.status_code
@@ -70,7 +71,7 @@ class ProcrastifyAPI:
         r = requests.get(f"{self.base}/analytics/focus-score", headers=self._headers)
         return r.json(), r.status_code
 
-    # ── Sessions ────────────────────────────────────────
+    # Sessions
     def start_session(self, task_id=None, duration=25):
         payload = {"duration": duration}
         if task_id:
@@ -99,13 +100,13 @@ class ProcrastifyAPI:
         return r.json(), r.status_code
 
 
-# ── Singleton ───────────────────────────────────────────
+# Singleton
 api = ProcrastifyAPI()
 
 
-# ── Auth Helpers ────────────────────────────────────────
+# Auth Helpers
 def require_auth():
-    """Redirect to login if not authenticated. Call at top of every page."""
+    """Redirect to login if not authenticated."""
     if not st.session_state.get("token"):
         st.warning("⚠️ Please login first!")
         st.switch_page("app.py")
@@ -119,17 +120,17 @@ def logout():
     st.switch_page("app.py")
 
 
-# ── Sidebar Branding ───────────────────────────────────
+# Sidebar Branding
 def setup_sidebar():
-    """Replace the default 'app' sidebar header with Procrastify branding."""
+    
     st.markdown("""
     <style>
-    /* Hide the default 'app' logo/title that Streamlit generates from filename */
-    [data-testid="stSidebarHeader"] {
+    /* Hide all elements with the specific data-testid */
+    [data-testid="stSidebarNav"] span:first-child {
         display: none !important;
     }
-    /* Add padding at top of sidebar nav to compensate */
-    section[data-testid="stSidebar"] > div:first-child {
+    
+    [data-testid="stSidebar"] > div:first-child {
         padding-top: 0.5rem;
     }
     </style>
@@ -137,12 +138,7 @@ def setup_sidebar():
 
     # Add branded header in sidebar
     st.sidebar.markdown("""
-    <div style="
-        text-align: center;
-        padding: 1rem 0.5rem 0.75rem;
-        margin-bottom: 0.25rem;
-        border-bottom: 1px solid #1e3a4f;
-    ">
+    <div style="text-align: center; padding: 1rem 0.5rem 0.75rem; margin-bottom: 0.25rem; border-bottom: 1px solid #1e3a4f;">
         <div style="font-size: 1.5rem; font-weight: 700; color: #2dd4bf;">
             🚀 Procrastify
         </div>
@@ -153,9 +149,9 @@ def setup_sidebar():
     """, unsafe_allow_html=True)
 
 
-# ── Formatters ──────────────────────────────────────────
+# Formatters
 def fmt_minutes(minutes):
-    """Convert minutes to readable string like '2h 15m'."""
+    
     if not minutes or minutes <= 0:
         return "0m"
     h, m = divmod(int(minutes), 60)

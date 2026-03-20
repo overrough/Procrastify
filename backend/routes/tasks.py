@@ -1,4 +1,4 @@
-# task routes - CRUD operations with priority calculation
+# task routes nd priority
 from flask import Blueprint, request, jsonify
 from datetime import datetime, date
 import sys
@@ -15,7 +15,7 @@ tasks_bp = Blueprint('tasks', __name__)
 
 @tasks_bp.route('', methods=['GET'])
 @token_required
-# get all tasks for the current user
+# get all tasks
 def get_all_tasks():
     status = request.args.get('status', 'pending')
     
@@ -27,7 +27,7 @@ def get_all_tasks():
     if tasks is None:
         return jsonify({'error': 'Failed to fetch tasks'}), 500
     
-    # Add urgency level and color to each task
+    # add urgency level nd color
     today = date.today()
     for task in tasks:
         deadline = task.get('deadline')
@@ -37,12 +37,12 @@ def get_all_tasks():
         days_remaining = (deadline - today).days if deadline else 999
         task['days_remaining'] = days_remaining
         
-        # Completed tasks get a COMPLETED badge, not urgency
+        # completed badge
         if task.get('status') == 'completed':
             task['urgency_level'] = 'COMPLETED'
             task['urgency_color'] = '#4CAF50'
         else:
-            # Recalculate priority score dynamically based on current date
+            # update priority score
             complexity = task.get('complexity', 3)
             priority_score = calculate_priority(deadline, complexity)
             task['priority_score'] = priority_score
@@ -51,7 +51,7 @@ def get_all_tasks():
             task['urgency_level'] = level
             task['urgency_color'] = color
         
-        # Convert datetime objects to strings for JSON
+        # format dates
         if task.get('deadline'):
             task['deadline'] = task['deadline'].strftime('%Y-%m-%d') if hasattr(task['deadline'], 'strftime') else str(task['deadline'])
         if task.get('created_at'):
@@ -70,14 +70,14 @@ def get_all_tasks():
 
 @tasks_bp.route('', methods=['POST'])
 @token_required
-# create a new task with priority score
+# create task
 def create_new_task():
     data = request.get_json()
     
     if not data:
         return jsonify({'error': 'No data provided'}), 400
     
-    # Validate required fields
+    # validate fields
     title = data.get('title', '').strip()
     deadline = data.get('deadline', '')
     complexity = data.get('complexity')
@@ -91,20 +91,20 @@ def create_new_task():
     if not complexity or complexity not in [1, 2, 3, 4, 5]:
         return jsonify({'error': 'Complexity must be between 1-5'}), 400
     
-    # Validate deadline format
+    # validate deadline format
     try:
         deadline_date = datetime.strptime(deadline, '%Y-%m-%d').date()
     except ValueError:
         return jsonify({'error': 'Deadline must be in YYYY-MM-DD format'}), 400
     
-    # Calculate priority score
+    # calc. priority
     priority_score = calculate_priority(deadline_date, complexity)
     
-    # Get optional fields
+    # get optional fields
     category = data.get('category', 'Study')
     description = data.get('description', '')
     
-    # Create task
+    # create task
     task_id = create_task(
         user_id=request.user_id,
         title=title,
@@ -141,7 +141,7 @@ def create_new_task():
 
 @tasks_bp.route('/<int:task_id>', methods=['GET'])
 @token_required
-# get a single task by its id
+# get task by id
 def get_single_task(task_id):
     task = get_task_by_id(task_id, request.user_id)
     
@@ -166,19 +166,19 @@ def get_single_task(task_id):
 
 @tasks_bp.route('/<int:task_id>', methods=['PUT'])
 @token_required
-# update an existing task
+# update task
 def update_existing_task(task_id):
     data = request.get_json()
     
     if not data:
         return jsonify({'error': 'No data provided'}), 400
     
-    # Check task exists
+    # check task exists
     existing_task = get_task_by_id(task_id, request.user_id)
     if not existing_task:
         return jsonify({'error': 'Task not found'}), 404
     
-    # Prepare update data
+    # prepare update data
     update_data = {}
     
     if 'title' in data:
@@ -190,7 +190,7 @@ def update_existing_task(task_id):
     if 'category' in data:
         update_data['category'] = data['category']
     
-    # Recalculate priority if deadline or complexity changed
+    # update priority if changed
     deadline = data.get('deadline', existing_task.get('deadline'))
     complexity = data.get('complexity', existing_task.get('complexity'))
     
@@ -206,7 +206,7 @@ def update_existing_task(task_id):
             return jsonify({'error': 'Complexity must be between 1-5'}), 400
         update_data['complexity'] = data['complexity']
     
-    # Recalculate priority
+    # calculate priority
     if 'deadline' in data or 'complexity' in data:
         priority_score = calculate_priority(deadline, complexity)
         update_data['priority_score'] = priority_score
@@ -222,7 +222,7 @@ def update_existing_task(task_id):
 
 @tasks_bp.route('/<int:task_id>', methods=['DELETE'])
 @token_required
-# delete a task by id
+# delete task
 def delete_existing_task(task_id):
     existing_task = get_task_by_id(task_id, request.user_id)
     if not existing_task:
@@ -238,7 +238,7 @@ def delete_existing_task(task_id):
 
 @tasks_bp.route('/<int:task_id>/complete', methods=['PATCH'])
 @token_required
-# mark a task as completed
+# complete task
 def mark_task_complete(task_id):
     existing_task = get_task_by_id(task_id, request.user_id)
     if not existing_task:
