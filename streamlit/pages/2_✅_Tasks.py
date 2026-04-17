@@ -1,7 +1,7 @@
 # tasks page create, view, complete and delete tasks
 import streamlit as st
 from datetime import date, timedelta
-from utils import api, require_auth, URGENCY_COLORS, setup_sidebar
+from utils import create_task, get_tasks, complete_task, delete_task, require_auth, URGENCY_COLORS, setup_sidebar
 
 st.set_page_config(page_title="Tasks | Procrastify", page_icon="✅", layout="wide")
 require_auth()
@@ -79,7 +79,7 @@ with st.expander("➕ Add New Task", expanded=False):
             st.error("Please enter a task title.")
         else:
             try:
-                data, status = api.create_task(title, str(deadline), complexity, category, description)
+                data, status = create_task(title, str(deadline), complexity, category, description)
                 if status == 201:
                     st.success(f"✅ Task '{title}' created!")
                     st.rerun()
@@ -88,13 +88,13 @@ with st.expander("➕ Add New Task", expanded=False):
             except Exception as e:
                 st.error(f"Error: {e}")
 
-# ── Filter Tabs ─────────────────────────────────────────
+# Filter Tabs
 tab_pending, tab_completed, tab_all = st.tabs(["📋 Pending", "✅ Completed", "📁 All"])
 
 #fetch and display tasks based on filter
 def render_tasks(status_filter):
     try:
-        data, code = api.get_tasks(status_filter)
+        data, code = get_tasks(status_filter)
         if code != 200:
             st.error("Failed to load tasks")
             return
@@ -154,14 +154,14 @@ def render_tasks(status_filter):
             with bc1:
                 if st.button("✅ Complete", key=f"done_{status_filter}_{task_id}"):
                     try:
-                        api.complete_task(task_id)
+                        complete_task(task_id)
                         st.rerun()
                     except Exception:
                         st.error("Failed to complete")
             with bc2:
                 if st.button("🗑️ Delete", key=f"del_{status_filter}_{task_id}"):
                     try:
-                        api.delete_task(task_id)
+                        delete_task(task_id)
                         st.rerun()
                     except Exception:
                         st.error("Failed to delete")

@@ -1,7 +1,7 @@
 # focus timer page pomodoro countdown with session tracking
 import streamlit as st
 import streamlit.components.v1 as components
-from utils import api, require_auth, setup_sidebar
+from utils import start_session, end_session, get_session_history, require_auth, setup_sidebar
 
 st.set_page_config(page_title="Focus Timer | Procrastify", page_icon="⏱️", layout="centered")
 require_auth()
@@ -135,7 +135,7 @@ with col1:
     if st.button("🎯 Start Focus Session", use_container_width=True, type="primary",
                  disabled=st.session_state.focus_active):
         try:
-            data, status = api.start_session()
+            data, status = start_session()
             if status == 201:
                 st.session_state.session_id = data.get("session_id")
                 st.session_state.focus_active = True
@@ -151,7 +151,7 @@ with col2:
                  disabled=not st.session_state.focus_active):
         if st.session_state.session_id:
             try:
-                data, _ = api.end_session(st.session_state.session_id, completed=True,
+                data, _ = end_session(st.session_state.session_id, completed=True,
                                           interruptions=0, focus_score=100)
                 streak = data.get("current_streak", 0)
                 st.session_state.focus_active = False
@@ -179,7 +179,7 @@ st.markdown("""
 st.markdown("---")
 st.subheader("📜 Recent Sessions")
 try:
-    hd, _ = api.get_session_history(5)
+    hd, _ = get_session_history(5)
     sessions = hd.get("sessions", [])
     if not sessions:
         st.info("No sessions yet — start your first one above!")

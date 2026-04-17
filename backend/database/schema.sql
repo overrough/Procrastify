@@ -1,5 +1,4 @@
--- Procrastify Database Schema
--- Compatible with older MySQL versions (no CHECK constraints, TIMESTAMP defaults)
+-- Procrastify Database Schema 
 
 -- Table 1: User authentication and profile
 CREATE TABLE users (
@@ -11,7 +10,7 @@ CREATE TABLE users (
     last_login TIMESTAMP NULL DEFAULT NULL
 );
 
--- Table 2: Task information with priority
+-- Table 2: Task information
 CREATE TABLE tasks (
     task_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,

@@ -1,6 +1,6 @@
 # dashboard page overview withfocus score, tasks and stats
 import streamlit as st
-from utils import api, require_auth, setup_sidebar
+from utils import get_daily_analytics, get_tasks, get_streak, require_auth, setup_sidebar
 
 st.set_page_config(page_title="Dashboard | Procrastify", page_icon="📊", layout="wide")
 require_auth()
@@ -73,7 +73,7 @@ top_tasks = []
 
 try:
     # Analytics daily
-    d, _ = api.get_daily_analytics()
+    d, _ = get_daily_analytics()
     if isinstance(d, dict):
         stats = d.get("stats", d)
         focus_score = stats.get("focus_score", 0) or 0
@@ -86,7 +86,7 @@ except Exception:
 
 try:
     # Pending tasks
-    td, _ = api.get_tasks("pending")
+    td, _ = get_tasks("pending")
     tasks_list = td.get("tasks", []) if isinstance(td, dict) else []
     pending = len(tasks_list)
     # Sort by days_remaining (closest deadline first) so urgent tasks show on top
@@ -97,7 +97,7 @@ except Exception:
 
 try:
     # Streak
-    sd, _ = api.get_streak()
+    sd, _ = get_streak()
     if isinstance(sd, dict):
         streak = sd.get("streak", 0) or 0
 except Exception:

@@ -1,10 +1,7 @@
-"""
-Procrastify — Streamlit Web App
-
-"""
+# procrastify login and registration page
 import streamlit as st
 import requests
-from utils import api
+from utils import login, register
 
 # Page config
 st.set_page_config(
@@ -114,7 +111,7 @@ with login_tab:
             st.markdown('<div class="error-banner">Please fill in all fields</div>', unsafe_allow_html=True)
         else:
             try:
-                data, status = api.login(email, password)
+                data, status = login(email, password)
                 if status == 200:
                     st.session_state["token"] = data["token"]
                     st.session_state["user"] = data["user"]
@@ -147,7 +144,7 @@ with register_tab:
             st.markdown('<div class="error-banner">Password must be at least 6 characters</div>', unsafe_allow_html=True)
         else:
             try:
-                data, status = api.register(name, email_r, pass_r)
+                data, status = register(name, email_r, pass_r)
                 if status == 201:
                     st.session_state["token"] = data["token"]
                     st.session_state["user"] = data["user"]

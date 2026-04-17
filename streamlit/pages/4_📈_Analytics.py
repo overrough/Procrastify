@@ -1,7 +1,7 @@
 # analytics page daily and weekly stats with charts
 import streamlit as st
 import plotly.graph_objects as go
-from utils import api, require_auth, setup_sidebar
+from utils import get_daily_analytics, get_weekly_analytics, get_session_stats, require_auth, setup_sidebar
 
 st.set_page_config(page_title="Analytics | Procrastify", page_icon="📈", layout="wide")
 require_auth()
@@ -58,7 +58,7 @@ tasks_done = 0
 sessions_done = 0
 
 try:
-    d, _ = api.get_daily_analytics()
+    d, _ = get_daily_analytics()
     if isinstance(d, dict):
         stats = d.get("stats", d)
         focus_score = stats.get("focus_score", 0) or 0
@@ -110,8 +110,8 @@ st.markdown("---")
 st.subheader("📊 Weekly Focus Trend")
 
 try:
-    w, _ = api.get_weekly_analytics()
-    weekly = w.get("stats", []) if isinstance(w, dict) else []
+    w, _ = get_weekly_analytics()
+    weekly = w.get("days", []) if isinstance(w, dict) else []
     
     if weekly:
         dates = [d.get("date", "?")[:10] for d in weekly]
@@ -157,7 +157,7 @@ st.markdown("---")
 st.subheader("🏆 Focus Session Stats")
 
 try:
-    sd, _ = api.get_session_stats()
+    sd, _ = get_session_stats()
     if isinstance(sd, dict):
         stats = sd.get("stats", sd)
         s1, s2, s3 = st.columns(3)

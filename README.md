@@ -96,9 +96,9 @@ App opens at `http://localhost:8501`
 ## How Priority Works
 
 ```
-Priority Score = Days Until Deadline × Complexity (1-5)
+Priority Score = Days Until Deadline / Complexity (1-5)
 ```
-Lower score = more urgent. Overdue tasks get a score of 0 (highest priority).
+Lower score = more urgent. Higher complexity reduces the score, making the task more urgent. Overdue tasks get a score of 0 (highest priority).
 
 ## Team
 
