@@ -3,7 +3,7 @@ import streamlit as st
 import requests
 import os
 
-API_BASE = os.environ.get("API_BASE_URL", "http://localhost:5000/api")
+API_BASE = os.environ.get("BACKEND_URL", "http://localhost:5000") + "/api"
 
 
 # get auth headers

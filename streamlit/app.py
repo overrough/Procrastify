@@ -121,7 +121,7 @@ with login_tab:
                 else:
                     st.markdown(f'<div class="error-banner">{data.get("error", "Login failed")}</div>', unsafe_allow_html=True)
             except requests.exceptions.ConnectionError:
-                st.markdown('<div class="error-banner">⚠️ Cannot connect to backend. Make sure Flask is running on port 5000.</div>', unsafe_allow_html=True)
+                st.markdown('<div class="error-banner">⚠️ Cannot connect to backend. Please check the backend URL and status.</div>', unsafe_allow_html=True)
             except Exception as e:
                 st.markdown(f'<div class="error-banner">Error: {e}</div>', unsafe_allow_html=True)
 
@@ -154,7 +154,7 @@ with register_tab:
                 else:
                     st.markdown(f'<div class="error-banner">{data.get("error", "Registration failed")}</div>', unsafe_allow_html=True)
             except requests.exceptions.ConnectionError:
-                st.markdown('<div class="error-banner">⚠️ Cannot connect to backend. Make sure Flask is running on port 5000.</div>', unsafe_allow_html=True)
+                st.markdown('<div class="error-banner">⚠️ Cannot connect to backend. Please check the backend URL and status.</div>', unsafe_allow_html=True)
             except Exception as e:
                 st.markdown(f'<div class="error-banner">Error: {e}</div>', unsafe_allow_html=True)
 
