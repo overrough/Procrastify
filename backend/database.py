@@ -1,18 +1,13 @@
-# database connection and queries
 import mysql.connector
 from mysql.connector import Error
 import os
 
-
-# db config
 MYSQL_HOST = os.environ.get('MYSQL_HOST', 'localhost')
 MYSQL_USER = os.environ.get('MYSQL_USER', 'root')
 MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD', '')
 MYSQL_DATABASE = os.environ.get('MYSQL_DATABASE', 'procrastify')
 MYSQL_PORT = int(os.environ.get('MYSQL_PORT', 3306))
 
-
-# connect to mysql
 def get_db():
     try:
         connection = mysql.connector.connect(
@@ -27,17 +22,13 @@ def get_db():
         print(f"Error connecting to MySQL: {e}")
         return None
 
-
-# run a query and return result
 def run_query(query, params=None, fetch=False, fetch_one=False):
     connection = get_db()
     if not connection:
         return None
-
     try:
         cursor = connection.cursor(dictionary=True)
         cursor.execute(query, params or ())
-
         if fetch_one:
             result = cursor.fetchone()
         elif fetch:
@@ -45,16 +36,12 @@ def run_query(query, params=None, fetch=False, fetch_one=False):
         else:
             connection.commit()
             result = cursor.lastrowid
-
         cursor.close()
         connection.close()
         return result
     except Error as e:
         print(f"Database error: {e}")
         return None
-
-
-# User queries
 
 def create_user(email, password_hash, name):
     query = """
@@ -63,23 +50,17 @@ def create_user(email, password_hash, name):
     """
     return run_query(query, (email, password_hash, name))
 
-
 def get_user_by_email(email):
     query = "SELECT * FROM users WHERE email = %s"
     return run_query(query, (email,), fetch_one=True)
-
 
 def get_user_by_id(user_id):
     query = "SELECT user_id, email, name, created_at, last_login FROM users WHERE user_id = %s"
     return run_query(query, (user_id,), fetch_one=True)
 
-
 def update_last_login(user_id):
     query = "UPDATE users SET last_login = NOW() WHERE user_id = %s"
     return run_query(query, (user_id,))
-
-
-# Task queries
 
 def create_task(user_id, title, deadline, complexity, category, priority_score, description=None):
     query = """
@@ -87,7 +68,6 @@ def create_task(user_id, title, deadline, complexity, category, priority_score, 
         VALUES (%s, %s, %s, %s, %s, %s, %s)
     """
     return run_query(query, (user_id, title, description, deadline, complexity, category, priority_score))
-
 
 def get_tasks_by_user(user_id, status=None):
     if status:
@@ -105,29 +85,23 @@ def get_tasks_by_user(user_id, status=None):
         """
         return run_query(query, (user_id,), fetch=True)
 
-
 def get_task_by_id(task_id, user_id):
     query = "SELECT * FROM tasks WHERE task_id = %s AND user_id = %s"
     return run_query(query, (task_id, user_id), fetch_one=True)
-
 
 def update_task(task_id, user_id, **kwargs):
     allowed_fields = ['title', 'description', 'deadline', 'complexity', 'category', 'priority_score', 'status']
     updates = []
     values = []
-
     for field, value in kwargs.items():
         if field in allowed_fields and value is not None:
             updates.append(f"{field} = %s")
             values.append(value)
-
     if not updates:
         return False
-
     values.extend([task_id, user_id])
     query = f"UPDATE tasks SET {', '.join(updates)} WHERE task_id = %s AND user_id = %s"
     return run_query(query, tuple(values))
-
 
 def complete_task(task_id, user_id):
     query = """
@@ -137,13 +111,9 @@ def complete_task(task_id, user_id):
     """
     return run_query(query, (task_id, user_id))
 
-
 def delete_task(task_id, user_id):
     query = "DELETE FROM tasks WHERE task_id = %s AND user_id = %s"
     return run_query(query, (task_id, user_id))
-
-
-# Focus session queries
 
 def create_focus_session(user_id, task_id=None):
     query = """
@@ -151,7 +121,6 @@ def create_focus_session(user_id, task_id=None):
         VALUES (%s, %s, NOW())
     """
     return run_query(query, (user_id, task_id))
-
 
 def end_focus_session(session_id, user_id, completed, interruptions, focus_score):
     query = """
@@ -165,7 +134,6 @@ def end_focus_session(session_id, user_id, completed, interruptions, focus_score
     """
     return run_query(query, (completed, interruptions, focus_score, session_id, user_id))
 
-
 def get_user_sessions(user_id, limit=10):
     query = """
         SELECT fs.*, t.title as task_title 
@@ -177,7 +145,6 @@ def get_user_sessions(user_id, limit=10):
     """
     return run_query(query, (user_id, limit), fetch=True)
 
-
 def get_session_streak(user_id):
     query = """
         SELECT COUNT(DISTINCT DATE(start_time)) as streak
@@ -187,16 +154,12 @@ def get_session_streak(user_id):
     """
     return run_query(query, (user_id,), fetch_one=True)
 
-
-# App usage queries
-
 def log_app_usage(user_id, app_name, app_category, duration_seconds, session_id=None):
     query = """
         INSERT INTO app_usage (user_id, session_id, app_name, app_category, duration_seconds)
         VALUES (%s, %s, %s, %s, %s)
     """
     return run_query(query, (user_id, session_id, app_name, app_category, duration_seconds))
-
 
 def get_app_usage_today(user_id):
     query = """
@@ -207,9 +170,6 @@ def get_app_usage_today(user_id):
         ORDER BY total_seconds DESC
     """
     return run_query(query, (user_id,), fetch=True)
-
-
-# Daily stats queries
 
 def update_daily_stats(user_id, productive_time=0, distraction_time=0, tasks_completed=0, sessions_completed=0):
     query = """
@@ -225,12 +185,10 @@ def update_daily_stats(user_id, productive_time=0, distraction_time=0, tasks_com
     """
     total_time = productive_time + distraction_time
     focus_score = int((productive_time / total_time * 100)) if total_time > 0 else 0
-
     return run_query(query, (
         user_id, total_time, productive_time, distraction_time, focus_score, tasks_completed, sessions_completed,
         total_time, productive_time, distraction_time, tasks_completed, sessions_completed
     ))
-
 
 def get_daily_stats(user_id, date=None):
     if date:
@@ -240,7 +198,6 @@ def get_daily_stats(user_id, date=None):
         query = "SELECT * FROM daily_stats WHERE user_id = %s AND date = CURDATE()"
         return run_query(query, (user_id,), fetch_one=True)
 
-
 def get_weekly_stats(user_id):
     query = """
         SELECT * FROM daily_stats 
@@ -249,9 +206,6 @@ def get_weekly_stats(user_id):
     """
     return run_query(query, (user_id,), fetch=True)
 
-
-# Distraction queries
-
 def create_distraction_alert(user_id, session_id, app_name, alert_type, message, time_on_app):
     query = """
         INSERT INTO distraction_alerts (user_id, session_id, app_name, alert_type, message, time_on_app)
@@ -259,19 +213,14 @@ def create_distraction_alert(user_id, session_id, app_name, alert_type, message,
     """
     return run_query(query, (user_id, session_id, app_name, alert_type, message, time_on_app))
 
-
 def update_alert_response(alert_id, response):
     query = "UPDATE distraction_alerts SET user_response = %s WHERE alert_id = %s"
     return run_query(query, (response, alert_id))
-
-
-# App category queries
 
 def get_app_category(user_id, app_name):
     query = "SELECT category FROM app_categories WHERE user_id = %s AND app_name = %s"
     result = run_query(query, (user_id, app_name), fetch_one=True)
     return result['category'] if result else 'neutral'
-
 
 def set_app_category(user_id, app_name, category):
     query = """
@@ -281,14 +230,11 @@ def set_app_category(user_id, app_name, category):
     """
     return run_query(query, (user_id, app_name, category, category))
 
-
 def get_distraction_apps(user_id):
     query = "SELECT app_name FROM app_categories WHERE user_id = %s AND category = 'distraction'"
     result = run_query(query, (user_id,), fetch=True)
     return [r['app_name'] for r in result] if result else []
 
-
-# setup default app categories for new users
 def setup_default_categories(user_id):
     default_apps = [
         ('VS Code', 'productive'),

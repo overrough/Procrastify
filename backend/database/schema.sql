@@ -1,6 +1,3 @@
--- Procrastify Database Schema 
-
--- Table 1: User authentication and profile
 CREATE TABLE users (
     user_id INT PRIMARY KEY AUTO_INCREMENT,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -10,7 +7,6 @@ CREATE TABLE users (
     last_login TIMESTAMP NULL DEFAULT NULL
 );
 
--- Table 2: Task information
 CREATE TABLE tasks (
     task_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
@@ -26,7 +22,6 @@ CREATE TABLE tasks (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
--- Table 3: FOCUS_SESSIONS Pomodoro time session tracking
 CREATE TABLE focus_sessions (
     session_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
@@ -41,7 +36,6 @@ CREATE TABLE focus_sessions (
     FOREIGN KEY (task_id) REFERENCES tasks(task_id) ON DELETE SET NULL
 );
 
--- Table 4: APP_USAGE Granular app monitoring logs
 CREATE TABLE app_usage (
     usage_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
@@ -54,7 +48,6 @@ CREATE TABLE app_usage (
     FOREIGN KEY (session_id) REFERENCES focus_sessions(session_id) ON DELETE SET NULL
 );
 
--- Table 5: DAILY_STATS Aggregated daily metrics
 CREATE TABLE daily_stats (
     stat_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
@@ -69,7 +62,6 @@ CREATE TABLE daily_stats (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
--- Table 6: DISTRACTION_ALERTS Alert history
 CREATE TABLE distraction_alerts (
     alert_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
@@ -84,7 +76,6 @@ CREATE TABLE distraction_alerts (
     FOREIGN KEY (session_id) REFERENCES focus_sessions(session_id) ON DELETE SET NULL
 );
 
--- Table 7: APP_CATEGORIES User-defined app classifications
 CREATE TABLE app_categories (
     category_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
@@ -95,7 +86,6 @@ CREATE TABLE app_categories (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
--- Create indexes for performance
 CREATE INDEX idx_tasks_user ON tasks(user_id);
 CREATE INDEX idx_tasks_deadline ON tasks(deadline);
 CREATE INDEX idx_tasks_status ON tasks(status);

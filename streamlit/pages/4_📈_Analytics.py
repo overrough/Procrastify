@@ -1,4 +1,3 @@
-# analytics page daily and weekly stats with charts
 import streamlit as st
 import plotly.graph_objects as go
 from utils import get_daily_analytics, get_weekly_analytics, get_session_stats, require_auth, setup_sidebar
@@ -7,14 +6,12 @@ st.set_page_config(page_title="Analytics | Procrastify", page_icon="📈", layou
 require_auth()
 setup_sidebar()
 
-# Block navigation if focus session is active
 if st.session_state.get("focus_active"):
     st.warning("⚠️ You have an active focus session! Go back to the timer to finish it.")
     if st.button("⏱️ Go to Focus Timer"):
         st.switch_page("pages/3_⏱️_Focus_Timer.py")
     st.stop()
 
-# CSS
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
@@ -48,7 +45,6 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Today's Stats
 st.subheader("📅 Today's Summary")
 
 focus_score = 0
@@ -80,7 +76,6 @@ with c3:
 with c4:
     st.markdown(f'<div class="stat-card"><div class="value">{sessions_done}</div><div class="label">Sessions</div></div>', unsafe_allow_html=True)
 
-# Time Breakdown Chart
 st.markdown("---")
 st.subheader("⏰ Time Breakdown")
 
@@ -105,18 +100,15 @@ if total_time > 0:
 else:
     st.info("No time data yet — complete a focus session to see your breakdown!")
 
-# Weekly Trend
 st.markdown("---")
 st.subheader("📊 Weekly Focus Trend")
 
 try:
     w, _ = get_weekly_analytics()
     weekly = w.get("days", []) if isinstance(w, dict) else []
-    
     if weekly:
         dates = [d.get("date", "?")[:10] for d in weekly]
         scores = [d.get("focus_score", 0) or 0 for d in weekly]
-        
         fig2 = go.Figure()
         fig2.add_trace(go.Scatter(
             x=dates, y=scores,
@@ -135,13 +127,10 @@ try:
             xaxis=dict(title="Date")
         )
         st.plotly_chart(fig2, use_container_width=True)
-        
-        # Weekly summary
         total_prod = sum(d.get("productive_time", 0) or 0 for d in weekly)
         total_dist = sum(d.get("distraction_time", 0) or 0 for d in weekly)
         total_tasks = sum(d.get("tasks_completed", 0) or 0 for d in weekly)
         avg_score = sum(scores) / len(scores) if scores else 0
-        
         k1, k2, k3, k4 = st.columns(4)
         k1.metric("Avg Focus Score", f"{avg_score:.0f}%")
         k2.metric("Total Productive", f"{total_prod}m")
@@ -152,7 +141,6 @@ try:
 except Exception:
     st.info("No weekly data available yet.")
 
-# Session Stats
 st.markdown("---")
 st.subheader("🏆 Focus Session Stats")
 

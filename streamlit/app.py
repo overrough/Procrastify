@@ -1,9 +1,7 @@
-# procrastify login and registration page
 import streamlit as st
 import requests
 from utils import login, register
 
-# Page config
 st.set_page_config(
     page_title="Procrastify",
     page_icon="🚀",
@@ -11,7 +9,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# Custom CSS
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
@@ -77,11 +74,9 @@ html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
 </style>
 """, unsafe_allow_html=True)
 
-# Already logged in?
 if st.session_state.get("token"):
     st.switch_page("pages/1_📊_Dashboard.py")
 
-# Hero Header
 st.markdown("""
 <div class="hero-header">
     <h1>🚀 Procrastify</h1>
@@ -95,10 +90,8 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Auth Tabs
 login_tab, register_tab = st.tabs(["🔑  Login", "✨  Create Account"])
 
-# Login
 with login_tab:
     with st.form("login_form"):
         st.subheader("Welcome back!")
@@ -125,7 +118,6 @@ with login_tab:
             except Exception as e:
                 st.markdown(f'<div class="error-banner">Error: {e}</div>', unsafe_allow_html=True)
 
-# Register
 with register_tab:
     with st.form("register_form"):
         st.subheader("Get started free")
@@ -158,6 +150,5 @@ with register_tab:
             except Exception as e:
                 st.markdown(f'<div class="error-banner">Error: {e}</div>', unsafe_allow_html=True)
 
-# Footer
 st.markdown("---")
 st.caption("Procrastify — BCA Final Project")

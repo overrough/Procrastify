@@ -1,4 +1,3 @@
-# tasks page create, view, complete and delete tasks
 import streamlit as st
 from datetime import date, timedelta
 from utils import create_task, get_tasks, complete_task, delete_task, require_auth, URGENCY_COLORS, setup_sidebar
@@ -7,14 +6,12 @@ st.set_page_config(page_title="Tasks | Procrastify", page_icon="✅", layout="wi
 require_auth()
 setup_sidebar()
 
-# Block navigation if focus session is active
 if st.session_state.get("focus_active"):
     st.warning("⚠️ You have an active focus session! Go back to the timer to finish it.")
     if st.button("⏱️ Go to Focus Timer"):
         st.switch_page("pages/3_⏱️_Focus_Timer.py")
     st.stop()
 
-# Custom CSS 
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -61,7 +58,6 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Add Task 
 with st.expander("➕ Add New Task", expanded=False):
     with st.form("add_task_form"):
         col1, col2 = st.columns(2)
@@ -88,10 +84,8 @@ with st.expander("➕ Add New Task", expanded=False):
             except Exception as e:
                 st.error(f"Error: {e}")
 
-# Filter Tabs
 tab_pending, tab_completed, tab_all = st.tabs(["📋 Pending", "✅ Completed", "📁 All"])
 
-#fetch and display tasks based on filter
 def render_tasks(status_filter):
     try:
         data, code = get_tasks(status_filter)
@@ -101,15 +95,11 @@ def render_tasks(status_filter):
     except Exception:
         st.warning("⚠️ Cannot connect to backend.")
         return
-
     tasks = data.get("tasks", [])
     summary = data.get("summary", {})
-
     if not tasks:
         st.info("No tasks here yet!")
         return
-
-    # Summary bar show different per tab
     if summary:
         if status_filter == "pending":
             s1, s2 = st.columns(2)
@@ -124,15 +114,12 @@ def render_tasks(status_filter):
             s1.metric("Total", summary.get("total", len(tasks)))
             s2.metric("Urgent", summary.get("high", 0) + summary.get("overdue", 0))
             s3.metric("Overdue", summary.get("overdue", 0))
-
     st.markdown("---")
-
     for task in tasks:
         color = URGENCY_COLORS.get(task.get("urgency_level", "low").lower(), "#4CAF50")
         level = task.get("urgency_level", "low").upper()
         days = task.get("days_remaining", "?")
         days_text = f"{days} day(s) left" if isinstance(days, int) and days >= 0 else "⚠️ OVERDUE"
-
         st.markdown(f"""
         <div class="task-card" style="border-left-color: {color}">
             <h4>{task.get("title", "Untitled")}
@@ -146,8 +133,6 @@ def render_tasks(status_filter):
             </div>
         </div>
         """, unsafe_allow_html=True)
-
-        # Action buttons (only for pending tasks)
         if task.get("status") != "completed":
             bc1, bc2, _ = st.columns([1, 1, 4])
             task_id = task.get("task_id")

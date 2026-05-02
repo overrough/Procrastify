@@ -1,4 +1,3 @@
-# settings page profile, preferences and logout
 import streamlit as st
 from utils import require_auth, logout, setup_sidebar
 
@@ -6,14 +5,12 @@ st.set_page_config(page_title="Settings | Procrastify", page_icon="⚙️", layo
 require_auth()
 setup_sidebar()
 
-# Block navigation if focus session is active
 if st.session_state.get("focus_active"):
     st.warning("⚠️ You have an active focus session! Go back to the timer to finish it.")
     if st.button("⏱️ Go to Focus Timer"):
         st.switch_page("pages/3_⏱️_Focus_Timer.py")
     st.stop()
 
-# CSS
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
@@ -47,7 +44,6 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Profile
 st.subheader("👤 Profile")
 user = st.session_state.get("user", {})
 
@@ -59,7 +55,6 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# Preferences
 st.markdown("---")
 st.subheader("🎨 Preferences")
 
@@ -78,14 +73,12 @@ with col2:
         st.session_state.timer_duration = default_dur
         st.success(f"Default duration set to {default_dur} minutes")
 
-# Logout
 st.markdown("---")
 st.subheader("🚪 Account")
 
 if st.button("Logout", type="primary", use_container_width=True):
     logout()
 
-# About
 st.markdown("---")
 st.subheader("ℹ️ About")
 

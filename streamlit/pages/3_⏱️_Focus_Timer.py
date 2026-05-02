@@ -1,4 +1,3 @@
-# focus timer page pomodoro countdown with session tracking
 import streamlit as st
 import streamlit.components.v1 as components
 from utils import start_session, end_session, get_session_history, require_auth, setup_sidebar
@@ -7,7 +6,6 @@ st.set_page_config(page_title="Focus Timer | Procrastify", page_icon="⏱️", l
 require_auth()
 setup_sidebar()
 
-# CSS 
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
@@ -49,7 +47,6 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Session State
 if "session_id" not in st.session_state:
     st.session_state.session_id = None
 if "focus_active" not in st.session_state:
@@ -57,7 +54,6 @@ if "focus_active" not in st.session_state:
 if "timer_duration" not in st.session_state:
     st.session_state.timer_duration = 25
 
-# When focus is active hide sidebar nav
 if st.session_state.focus_active:
     st.markdown("""
     <style>
@@ -67,7 +63,6 @@ if st.session_state.focus_active:
     """, unsafe_allow_html=True)
     st.info("🔒 Focus mode is ON — sidebar is hidden. Complete or end your session to navigate away.")
 
-#JS-based Timer
 dur = st.session_state.timer_duration
 timer_html = f"""
 <div id="timer-wrap" style="text-align:center;padding:1.5rem;font-family:'Inter',sans-serif;caret-color:transparent;">
@@ -127,7 +122,6 @@ timer_html = f"""
 """
 components.html(timer_html, height=320)
 
-# Server session controls
 st.markdown("---")
 col1, col2 = st.columns(2)
 
@@ -165,7 +159,6 @@ with col2:
             st.warning("No server session found. Focus lock released.")
             st.rerun()
 
-# Tips
 st.markdown("""
 <div class="tip-box">
     <strong>💡 Tips</strong><br>
@@ -175,7 +168,6 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Session History 
 st.markdown("---")
 st.subheader("📜 Recent Sessions")
 try:

@@ -1,4 +1,3 @@
-# dashboard page overview withfocus score, tasks and stats
 import streamlit as st
 from utils import get_daily_analytics, get_tasks, get_streak, require_auth, setup_sidebar
 
@@ -6,14 +5,12 @@ st.set_page_config(page_title="Dashboard | Procrastify", page_icon="📊", layou
 require_auth()
 setup_sidebar()
 
-# Check if focus session is active redirect back 
 if st.session_state.get("focus_active"):
     st.warning("⚠️ You have an active focus session! Go back to the timer to finish it.")
     if st.button("⏱️ Go to Focus Timer"):
         st.switch_page("pages/3_⏱️_Focus_Timer.py")
     st.stop()
 
-# CSS 
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
@@ -50,7 +47,6 @@ html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
 </style>
 """, unsafe_allow_html=True)
 
-#  Header 
 user = st.session_state.get("user", {})
 name = user.get("name", "Student")
 
@@ -61,7 +57,6 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-#Fetch data 
 focus_score = 0
 pending = 0
 completed_today = 0
@@ -72,7 +67,6 @@ focus_sessions = 0
 top_tasks = []
 
 try:
-    # Analytics daily
     d, _ = get_daily_analytics()
     if isinstance(d, dict):
         stats = d.get("stats", d)
@@ -85,25 +79,21 @@ except Exception:
     pass
 
 try:
-    # Pending tasks
     td, _ = get_tasks("pending")
     tasks_list = td.get("tasks", []) if isinstance(td, dict) else []
     pending = len(tasks_list)
-    # Sort by days_remaining (closest deadline first) so urgent tasks show on top
     tasks_list.sort(key=lambda t: t.get("days_remaining", 999))
     top_tasks = tasks_list[:3]
 except Exception:
     pass
 
 try:
-    # Streak
     sd, _ = get_streak()
     if isinstance(sd, dict):
         streak = sd.get("streak", 0) or 0
 except Exception:
     pass
 
-# Stat Cards
 c1, c2, c3, c4 = st.columns(4)
 
 with c1:
@@ -135,7 +125,6 @@ with c4:
         <div class="label">Day Streak</div>
     </div>""", unsafe_allow_html=True)
 
-# Priority Tasks +Todays Stats
 st.markdown("---")
 col_left, col_right = st.columns([3, 2])
 

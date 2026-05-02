@@ -1,4 +1,3 @@
-# procrastify backend
 from flask import Flask, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -10,12 +9,9 @@ load_dotenv()
 app = Flask(__name__)
 app.config['SECRET_KEY'] = SECRET_KEY
 
-# allow frontend to call api
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-# register all routes under /api
 app.register_blueprint(api, url_prefix='/api')
-
 
 @app.route('/')
 def index():
@@ -25,16 +21,13 @@ def index():
         'status': 'running'
     })
 
-
 @app.errorhandler(404)
 def not_found(error):
     return jsonify({'error': 'Endpoint not found'}), 404
 
-
 @app.errorhandler(500)
 def server_error(error):
     return jsonify({'error': 'Internal server error'}), 500
-
 
 if __name__ == '__main__':
     print("Procrastify backend starting on port 5000")
