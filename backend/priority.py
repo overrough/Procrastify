@@ -63,7 +63,7 @@ def calculate_priority(deadline, complexity):
     days_remaining = (deadline - date.today()).days
     if days_remaining <= 0:
         return 0
-    return round(days_remaining / complexity, 1)
+    return round(days_remaining / complexity)
 
 def get_urgency_level(priority_score, days_remaining):
     if priority_score == 0 or days_remaining <= 0:

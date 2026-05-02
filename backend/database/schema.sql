@@ -15,7 +15,7 @@ CREATE TABLE tasks (
     deadline DATE NOT NULL,
     complexity INT DEFAULT 3,
     category ENUM('Study', 'Personal', 'Work', 'Other') DEFAULT 'Study',
-    priority_score FLOAT,
+    priority_score INT,
     status ENUM('pending', 'completed') DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     completed_at TIMESTAMP NULL DEFAULT NULL,
@@ -83,16 +83,6 @@ CREATE TABLE app_categories (
     category ENUM('productive', 'distraction', 'neutral') DEFAULT 'neutral',
     is_custom BOOLEAN DEFAULT FALSE,
     UNIQUE KEY unique_user_app (user_id, app_name),
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-);
-
-CREATE TABLE streaks (
-    streak_id INT PRIMARY KEY AUTO_INCREMENT,
-    user_id INT NOT NULL UNIQUE,
-    current_streak INT DEFAULT 0,
-    longest_streak INT DEFAULT 0,
-    level VARCHAR(20) DEFAULT 'Starting',
-    last_active DATE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
