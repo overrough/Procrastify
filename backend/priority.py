@@ -8,7 +8,7 @@ import os
 SECRET_KEY = os.environ.get('SECRET_KEY', 'procrastify-super-secret-key-2026')
 JWT_SECRET = os.environ.get('JWT_SECRET_KEY', 'jwt-procrastify-secret-2026')
 JWT_EXPIRY_DAYS = 7
-DEFAULT_POMODORO = 25
+DEFAULT_POMODORO = 15
 DEFAULT_BREAK = 5
 
 def hash_password(password):
@@ -63,7 +63,7 @@ def calculate_priority(deadline, complexity):
     days_remaining = (deadline - date.today()).days
     if days_remaining <= 0:
         return 0
-    return round(days_remaining / complexity)
+    return round(days_remaining / complexity, 1)
 
 def get_urgency_level(priority_score, days_remaining):
     if priority_score == 0 or days_remaining <= 0:
