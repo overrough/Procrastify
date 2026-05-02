@@ -8,7 +8,7 @@ This is our BCA final year project. It helps students manage their tasks, track 
 
 - **User Login & Registration** — Secure login with JWT tokens
 - **Task Management** — Add, edit, complete, delete tasks with categories
-- **Priority System** — Tasks are auto-ranked using `Priority = Days × Complexity`
+- **Priority System** — Tasks are auto-ranked using `Priority = Days / Complexity`
 - **Focus Timer (Pomodoro)** — 25-minute focus sessions with break tracking
 - **Analytics Dashboard** — See your focus score, daily stats, and progress
 - **Screen Time Tracking** — Monitor productive vs distraction time

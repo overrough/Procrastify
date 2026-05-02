@@ -8,7 +8,7 @@ import os
 SECRET_KEY = os.environ.get('SECRET_KEY', 'procrastify-super-secret-key-2026')
 JWT_SECRET = os.environ.get('JWT_SECRET_KEY', 'jwt-procrastify-secret-2026')
 JWT_EXPIRY_DAYS = 7
-DEFAULT_POMODORO = 15
+DEFAULT_POMODORO = 25
 DEFAULT_BREAK = 5
 
 def hash_password(password):
