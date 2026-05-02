@@ -4,12 +4,14 @@
 
 This is our BCA final year project. It helps students manage their tasks, track focus sessions, and stay productive.
 
+🌐 **Live Demo: [https://procrastify-web.onrender.com/](https://procrastify-web.onrender.com/)**
+
 ## Features
 
 - **User Login & Registration** — Secure login with JWT tokens
 - **Task Management** — Add, edit, complete, delete tasks with categories
 - **Priority System** — Tasks are auto-ranked using `Priority = Days / Complexity`
-- **Focus Timer (Pomodoro)** — 25-minute focus sessions with break tracking
+- **Focus Timer (Pomodoro)** — 15-minute focus sessions with break tracking
 - **Analytics Dashboard** — See your focus score, daily stats, and progress
 - **Screen Time Tracking** — Monitor productive vs distraction time
 - **Distraction Alerts** — Get alerts when spending too much time on distracting apps
@@ -20,66 +22,58 @@ This is our BCA final year project. It helps students manage their tasks, track 
 |-----------|------------|
 | Frontend (Web) | Streamlit |
 | Backend API | Flask (Python) |
-| Database | MySQL (via XAMPP) |
+| Database | MySQL |
 | Authentication | JWT + bcrypt |
+| Deployment | Render.com |
 
 ## Project Structure
 
 ```
 procrastify/
-├── backend/                 # Flask API Server
-│   ├── app.py               # Main app
-│   ├── config.py            # Config settings
+├── backend/
+│   ├── app.py
 │   ├── database/
-│   │   └── schema.sql       # MySQL tables
-│   ├── routes/              # API routes
-│   ├── models/              # Database models
-│   └── utils/               # Helper functions
+│   │   └── schema.sql
+│   ├── routes.py
+│   ├── database.py
+│   └── priority.py
 │
-├── streamlit/               # Streamlit Web App
-│   ├── app.py               # Login/Register page
-│   ├── utils.py             # API client & helpers
-│   └── pages/               # Dashboard, Tasks, Timer, Analytics, Settings
+├── streamlit/
+│   ├── app.py
+│   ├── utils.py
+│   └── pages/
 ```
 
-## How to Run
+## How to Use
 
-### 1. Database Setup
+The app is live at **[https://procrastify-web.onrender.com/](https://procrastify-web.onrender.com/)** — just open it in your browser, register an account, and start managing your tasks.
 
-1. Open XAMPP and start **Apache** + **MySQL**
-2. Go to `http://localhost/phpmyadmin`
-3. Create a new database called `procrastify`
-4. Import `backend/database/schema.sql` into it
+## Local Development (Optional)
 
-### 2. Start Backend
+To run locally:
 
-```bash
-cd backend
-pip install -r requirements.txt
-python app.py
-```
+1. Start **MySQL** and create a database called `procrastify`
+2. Import `backend/database/schema.sql`
+3. Run the backend:
+   ```bash
+   cd backend
+   pip install -r requirements.txt
+   python app.py
+   ```
+4. Run the frontend:
+   ```bash
+   cd streamlit
+   pip install -r requirements.txt
+   streamlit run app.py
+   ```
 
-Server starts at `http://localhost:5000`
+## Deployment
 
-### 3. Start Streamlit App
+The app is deployed on Render.com at **https://procrastify-web.onrender.com/**
 
-```bash
-cd streamlit
-pip install -r requirements.txt
-streamlit run app.py
-```
+Set the following environment variable in your **Streamlit** app:
 
-App opens at `http://localhost:8501`
-
-## Live Demo
-
-🌐 **[https://procrastify-web.onrender.com/](https://procrastify-web.onrender.com/)**
-
-## Deployment (Render.com)
-
-The app is deployed on Render. Set the following environment variable in your **Streamlit** app:
-
-- `BACKEND_URL`: The URL of your deployed Flask backend (e.g., `https://procrastify-backend.onrender.com`). **Do not** add `/api` or a trailing slash.
+- `BACKEND_URL`: The URL of your deployed Flask backend. **Do not** add `/api` or a trailing slash.
 
 ## API Endpoints
 

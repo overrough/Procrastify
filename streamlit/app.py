@@ -151,4 +151,4 @@ with register_tab:
                 st.markdown(f'<div class="error-banner">Error: {e}</div>', unsafe_allow_html=True)
 
 st.markdown("---")
-st.caption("Procrastify — BCA Final Year Project 2026")
+st.caption("Procrastify — BCA Final Project")
