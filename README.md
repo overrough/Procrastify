@@ -71,9 +71,13 @@ streamlit run app.py
 
 App opens at `http://localhost:8501`
 
+## Live Demo
+
+🌐 **[https://procrastify-web.onrender.com/](https://procrastify-web.onrender.com/)**
+
 ## Deployment (Render.com)
 
-When deploying to Render, set the following environment variable in your **Streamlit** app:
+The app is deployed on Render. Set the following environment variable in your **Streamlit** app:
 
 - `BACKEND_URL`: The URL of your deployed Flask backend (e.g., `https://procrastify-backend.onrender.com`). **Do not** add `/api` or a trailing slash.
 

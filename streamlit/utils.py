@@ -118,9 +118,9 @@ def fmt_minutes(minutes):
 
 URGENCY_COLORS = {
     "overdue":    "#FF0000",
-    "high":       "#FF4D4D",
-    "medium":     "#FFA500",
-    "low":        "#FFFF00",
-    "relaxed":    "#00FF00",
+    "high":       "#FF4444",
+    "medium":     "#FFB347",
+    "low":        "#77DD77",
+    "relaxed":    "#90EE90",
     "completed":  "#4CAF50",
 }
